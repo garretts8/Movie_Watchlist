@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movie Showcase</title>
+    <link rel="stylesheet" href="public/css/styles.css" />
+  </head>
+  <body>
+    <!-- Movie Display -->
+    <div class="movie-container">
+      <img class="movie-poster" src="poster.jpg" alt="Movie Poster" />
+      <h1 class="movie-title">Movie Title Here</h1>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+      <div class="modal-box">
+        <h2>Sign In</h2>
+        <input type="text" id="username" placeholder="Username" />
+        <input type="password" id="password" placeholder="Password" />
+        <button class="login-btn" onclick="login()">Login</button>
+      </div>
+    </div>
+
+    <script>
+      function login() {
+        const user = document.getElementById('username').value;
+        const pass = document.getElementById('password').value;
+
+        if (user.trim() !== '' && pass.trim() !== '') {
+          document.getElementById('loginModal').style.display = 'none';
+          document.body.style.overflow = 'auto'; // Allow scrolling again
+        } else {
+          alert('Please enter both username and password.');
+        }
+      }
+    </script>
+  </body>
+</html>

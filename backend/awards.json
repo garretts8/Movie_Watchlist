@@ -1,0 +1,68 @@
+[
+  {
+        "_id": {
+        "$oid": "69a61418975615bcb31f4714"
+        },
+        "movieId": "69a60fe0975615bcb31f46f3",
+        "awardName": "Academy Awards",
+        "category": "null",
+        "year": "null",        
+        "winner": "False",
+        "recipient": "null"
+    },
+  {
+        "_id": {
+        "$oid": "69a61436975615bcb31f4717"
+        },
+        "movieId": "69a61005975615bcb31f46f5",
+        "awardName": "Academy Awards",
+        "category": "Best: Actress, Costume Design, Original Score",
+        "year": "2005",        
+        "winner": "False",
+        "recipient": "null"
+    },
+    {
+        "_id": {
+        "$oid": "69a6144d975615bcb31f4719"
+        },
+        "movieId": "69a61024975615bcb31f46f7",
+        "awardName": "Academy Awards",
+        "category": "null",
+        "year": "null",        
+        "winner": "False",
+        "recipient": "null"
+    },
+    {
+        "_id": {
+        "$oid": "69a61467975615bcb31f471b"
+        },
+       "movieId": "69a61042975615bcb31f46f9",
+        "awardName": "Academy Awards",
+        "category": "null",
+        "year": "null",        
+        "winner": "False",
+        "recipient": "null"
+    },
+    {
+        "_id": {
+        "$oid": "69a6147f975615bcb31f471d"
+        },
+        "movieId": "69a61077975615bcb31f46fb",
+        "awardName": "Academy Awards",
+        "category": "Best: Costume Design, Visual Effects, Makeup, Music, Music(Original Song)",
+        "year": "null",        
+        "winner": "False",
+        "recipient": "null"
+    },
+    {
+        "_id": {
+        "$oid": "69a61fcc975615bcb31f4726"
+        },
+        "movieId": "69a6179f975615bcb31f4720",
+        "awardName": "Academy Awards",
+        "category": "Cinematography, Makeup, Original Score, Visual Effects",
+        "year": "2002",        
+        "winner": "True",
+        "recipient": "Andrew Lesnie (Cinematography), Peter Owen and Richard Taylor (Makeup), Howard Shore (Original Score), and Jim Rygiel, Randall William Cook, Richard Taylor, and Mark Stetson (Visual Effects)"
+    }
+]

@@ -1,0 +1,86 @@
+[
+  {
+        "_id": {
+        "$oid": "69a612a3975615bcb31f4707"
+        },
+        "userId": "69a610d1975615bcb31f4700",
+        "movieId": "69a60fe0975615bcb31f46f3",
+        "addedDate": "July 21, 2015",
+        "status": "completed",        
+        "userRating": "5",
+        "reviewText": "Great movie. Would recommend to Howard",
+        "startedWatching": "July 21, 2015", 
+        "completedWatching": "July 21, 2015",
+        "rewatchCount": 3
+    },
+  {
+        "_id": {
+        "$oid": "69a612bc975615bcb31f4709"
+        },
+        "userId": "69a610f4975615bcb31f4702",
+        "movieId": "69a61005975615bcb31f46f5",
+        "addedDate": "March 1, 2006",
+        "status": "completed",        
+        "userRating": "5",
+        "reviewText": "Great movie. One of my favorites",
+        "startedWatching": "March 1, 2006", 
+        "completedWatching": "March 1, 2006",
+        "rewatchCount": 6
+    },
+    {
+        "_id": {
+        "$oid": "69a612da975615bcb31f470b"
+        },
+        "userId": "69a610d1975615bcb31f4700",
+        "movieId": "69a61024975615bcb31f46f7",
+        "addedDate": "Dec 16, 2003",
+        "status": "watching",        
+        "userRating": "null",
+        "reviewText": "Great mixture of characters",
+        "startedWatching": "March 2, 2006", 
+        "completedWatching": "null",
+        "rewatchCount": 0
+    },
+    {
+        "_id": {
+        "$oid": "69a612f2975615bcb31f470d"
+        },
+        "userId": "69a610f4975615bcb31f4702",
+        "movieId": "69a61042975615bcb31f46f9",
+        "addedDate": "June 2, 2015",
+        "status": "plan-to-watch",        
+        "userRating": "null",
+        "reviewText": "Great romance story. Cinderella retold",
+        "startedWatching": "null", 
+        "completedWatching": "null",
+        "rewatchCount": 0
+    },
+    {
+        "_id": {
+        "$oid": "69a61326975615bcb31f470f"
+        },
+        "userId": "69a610f4975615bcb31f4702",
+        "movieId": "69a61077975615bcb31f46fb",
+        "addedDate": "June 2, 2015",
+        "status": "completed",        
+        "userRating": "5",
+        "reviewText": "It is a classic. Great for the kids to watch",
+        "startedWatching": "July 19, 2015", 
+        "completedWatching": "July 19, 2015",
+        "rewatchCount": 4
+    },
+     {
+        "_id": {
+        "$oid": "69a6188c975615bcb31f4723"
+        },
+        "userId": "69a610f4975615bcb31f4702",
+        "movieId": "69a6179f975615bcb31f4720",
+        "addedDate": "March 1, 2001",
+        "status": "completed",        
+        "userRating": "5",
+        "reviewText": "It is a classic. Battle between good and evil",
+        "startedWatching": "March 1, 2001", 
+        "completedWatching": "March 1, 2001",
+        "rewatchCount": 3
+    }
+]

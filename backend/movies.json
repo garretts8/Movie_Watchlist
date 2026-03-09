@@ -1,0 +1,74 @@
+[
+  {
+        "_id": {
+        "$oid": "69a60fe0975615bcb31f46f3"
+        },
+        "title": "Jupiter Ascending",
+        "director": "Andy Wachowski, Lana Wachowski",
+        "genre": "Action & Adventure, Science Fiction & Fantasy",
+        "releaseDate": "June 2, 2015",
+        "runtime": "2 hours and 7 minutes",        
+        "rating": "PG-13",
+        "cast": "Channing Tatum, Mila Kunis, Sean Bean, Eddie Redmayne"
+    },
+  {
+        "_id": {
+        "$oid": "69a61005975615bcb31f46f5"
+        },
+        "title": "Pride and Prejudice",
+        "director": "Joe Wright",
+        "genre": "Drama, Romance",
+        "releaseDate": "February 28, 2006",
+        "runtime": "2 hours and 1 minutes",        
+        "rating": "PG",
+        "cast": "Keira Knightley, Matthew Macfadyen, Donald Sutherland"
+    },
+    {
+        "_id": {
+        "$oid": "69a61024975615bcb31f46f7"
+        },
+        "title": "League of Extraordinary Gentlemen",
+        "director": "Stephen Norrington",
+        "genre": "Action, Adventure",
+        "releaseDate": "December 16, 2003",
+        "runtime": "1 hours and 50 minutes",        
+        "rating": "PG-13",
+        "cast": "Jason Flemyng, Peta Wilson, Sean Connery, Stuart Townsend, Tony Curran"
+    },
+    {
+        "_id": {
+        "$oid": "69a61042975615bcb31f46f9"
+        },
+        "title": "Ever After",
+        "director": "Andy Tennant",
+        "genre": "Drama, Fantasy, Romance",
+        "releaseDate": "July 31, 1998",
+        "runtime": "1 hours and 40 minutes",        
+        "rating": "PG",
+        "cast": "Drew Barrymore, Anjelica Huston, Dougray Scott, Jeanne Moreau"
+    },
+    {
+        "_id": {
+        "$oid": "69a61077975615bcb31f46fb"
+        },
+        "title": "Hook",
+        "director": "Steven Spielberg",
+        "genre": "Fantasy, Adventure",
+        "releaseDate": "June 2, 2015",
+        "runtime": "2 hours and 22 minutes",        
+        "rating": "PG",
+        "cast": "Dustin Hoffman, Robin Williams, Julia Roberts"
+    },
+    {
+        "_id": {
+        "$oid": "69a6179f975615bcb31f4720"
+        },
+        "title": "Lord of the Rings:The Fellowshop of the Ring",
+        "director": "Peter Jackson",
+        "genre": "Fantasy, Adventure",
+        "releaseDate": "December 19, 2001",
+        "runtime": "2 hours and 58 minutes",        
+        "rating": "PG-13",
+        "cast": "Elijah Wood, Ian McKellen, Liv Tyler, Viggo Mortensen, Sean Astin, Cate Blanchett, John Rhys-Davies, Billy Boyd, Dominic Monaghan, Orlando Bloom, Christopher Lee, Hugo Weaving, Sean Bean, Ian Holm, Andy Serkis"
+    }
+]
