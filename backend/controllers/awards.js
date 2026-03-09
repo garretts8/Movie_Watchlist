@@ -17,7 +17,7 @@ const getAllAwards = async (req, res) => {
                 $match: {
                   $expr: {
                     $or: [
-                      { $eq: ['$_id', '$$movieId'] },
+                      { $eq: ['$_id', { $toObjectId: '$$movieId' }] },
                       { $eq: [{ $toString: '$_id' }, '$$movieId'] }
                     ]
                   }
@@ -71,7 +71,7 @@ const getAwardsByMovieId = async (req, res) => {
                 $match: {
                   $expr: {
                     $or: [
-                      { $eq: ['$_id', '$$movieId'] },
+                      { $eq: ['$_id', { $toObjectId: '$$movieId' }] },
                       { $eq: [{ $toString: '$_id' }, '$$movieId'] }
                     ]
                   }
@@ -97,19 +97,24 @@ const getAwardById = async (req, res) => {
   try {
     const awardId = req.params.id;
     
+    // Try as ObjectId first (since awards _id might be ObjectId)
+    let objectId;
+    try {
+      objectId = new ObjectId(awardId);
+    } catch (e) {
+      objectId = null;
+    }
+    
+    const matchCondition = objectId 
+      ? { $or: [{ _id: awardId }, { _id: objectId }] }
+      : { _id: awardId };
+    
     const result = await mongodb
       .getDb()
       .collection('awards')
       .aggregate([
         {
-          $match: {
-            $expr: {
-              $or: [
-                { $eq: ['$_id', awardId] },
-                { $eq: [{ $toString: '$_id' }, awardId] }
-              ]
-            }
-          }
+          $match: matchCondition
         },
         {
           $lookup: {
@@ -120,7 +125,7 @@ const getAwardById = async (req, res) => {
                 $match: {
                   $expr: {
                     $or: [
-                      { $eq: ['$_id', '$$movieId'] },
+                      { $eq: ['$_id', { $toObjectId: '$$movieId' }] },
                       { $eq: [{ $toString: '$_id' }, '$$movieId'] }
                     ]
                   }
@@ -145,23 +150,54 @@ const getAwardById = async (req, res) => {
   }
 };
 
-// Use POST to create award
+// Use POST to create award - FIXED
 const createAward = async (req, res) => {
   try {
-    const movieId = req.body.movieId; // Keep as string
+    const movieId = req.body.movieId;
 
-    // Check if movie exists
-    const movie = await mongodb
+    console.log('Looking for movie with ID:', movieId);
+    console.log('ID type:', typeof movieId);
+    
+    // Check if movie exists - try both string and ObjectId
+    let movie = null;
+    
+    // First try as string
+    movie = await mongodb
       .getDb()
       .collection('movies')
       .findOne({ _id: movieId });
+    
+    console.log('Movie found as string?', movie ? 'Yes' : 'No');
+    
+    // If not found, try as ObjectId
+    if (!movie) {
+      try {
+        const movieObjectId = new ObjectId(movieId);
+        console.log('Trying as ObjectId:', movieObjectId);
+        movie = await mongodb
+          .getDb()
+          .collection('movies')
+          .findOne({ _id: movieObjectId });
+        console.log('Movie found as ObjectId?', movie ? 'Yes' : 'No');
+      } catch (e) {
+        console.log('Invalid ObjectId format:', e.message);
+      }
+    }
 
     if (!movie) {
-      return res.status(404).json({ message: 'Movie not found' });
+      return res.status(404).json({ 
+        message: 'Movie not found',
+        debug: { 
+          movieId: movieId,
+          message: 'Movie does not exist in database'
+        }
+      });
     } 
 
+    console.log('Movie found:', movie.title);
+
     const award = {
-      movieId: movieId,
+      movieId: movieId,  // Keep as string to match existing data format
       awardName: req.body.awardName,
       category: req.body.category,
       year: req.body.year,
@@ -200,7 +236,19 @@ const createAward = async (req, res) => {
 // PUT update award
 const updateAward = async (req, res) => {
   try {
-    const awardId = req.params.id; // Keep as string
+    const awardId = req.params.id;
+
+    // Try as ObjectId first
+    let objectId;
+    try {
+      objectId = new ObjectId(awardId);
+    } catch (e) {
+      objectId = null;
+    }
+    
+    const query = objectId 
+      ? { $or: [{ _id: awardId }, { _id: objectId }] }
+      : { _id: awardId };
 
     const award = {
       awardName: req.body.awardName,
@@ -223,7 +271,7 @@ const updateAward = async (req, res) => {
     const response = await mongodb
       .getDb()
       .collection('awards')
-      .updateOne({ _id: awardId }, { $set: award });
+      .updateOne(query, { $set: award });
 
     if (response.matchedCount === 0) {
       return res.status(404).json({ message: 'Award not found' });
@@ -245,12 +293,24 @@ const updateAward = async (req, res) => {
 // DELETE award
 const deleteAward = async (req, res) => {
   try {
-    const awardId = req.params.id; // Keep as string
+    const awardId = req.params.id;
+    
+    // Try as ObjectId first
+    let objectId;
+    try {
+      objectId = new ObjectId(awardId);
+    } catch (e) {
+      objectId = null;
+    }
+    
+    const query = objectId 
+      ? { $or: [{ _id: awardId }, { _id: objectId }] }
+      : { _id: awardId };
     
     const response = await mongodb
       .getDb()
       .collection('awards')
-      .deleteOne({ _id: awardId });
+      .deleteOne(query);
 
     if (response.deletedCount === 0) {
       return res.status(404).json({ message: 'Award not found' });

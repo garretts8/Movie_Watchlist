@@ -170,7 +170,7 @@ const userValidationRules = {
   ],
 };
 
-// Movie validation rules
+// Movie validation rules - FIXED to match database format
 const movieValidationRules = {
   create: [
     body('title')
@@ -186,36 +186,52 @@ const movieValidationRules = {
       .withMessage('Director is required')
       .isLength({ min: 2, max: 100 })
       .withMessage('Director name must be between 2 and 100 characters')
-      .matches(/^[a-zA-Z\s.'-]+$/)
+      .matches(/^[a-zA-Z\s.,'&-]+$/)
       .withMessage(
-        'Director name can only contain letters, spaces, periods, apostrophes, and hyphens',
+        'Director name can only contain letters, spaces, periods, commas, apostrophes, ampersands, and hyphens',
       ),
 
+    // FIXED: Genre should be a string, not an array
     body('genre')
-      .isArray({ min: 1 })
-      .withMessage('Genre must be an array with at least one genre')
-      .custom((genres) => {
-        return genres.every(g => typeof g === 'string' && g.trim().length > 0);
-      })
-      .withMessage('All genres must be non-empty strings'),
+      .trim()
+      .notEmpty()
+      .withMessage('Genre is required')
+      .isLength({ min: 2, max: 200 })
+      .withMessage('Genre must be between 2 and 200 characters'),
 
+    // FIXED: Release date should match database format (e.g., "June 2, 2015")
     body('releaseDate')
+      .trim()
       .notEmpty()
       .withMessage('Release date is required')
-      .isISO8601()
-      .withMessage('Release date must be a valid date (YYYY-MM-DD)'),
+      .custom((value) => {
+        // More flexible date validation - matches formats like "June 2, 2015", "February 28, 2006", etc.
+        const dateRegex = /^[A-Za-z]+\s+\d{1,2},\s+\d{4}$/;
+        if (!dateRegex.test(value)) {
+          throw new Error('Must be a valid date (e.g., "June 2, 2015" or "February 28, 2006")');
+        }
+        return true;
+      }),
 
+    // FIXED: Runtime should match database format (e.g., "2 hours and 7 minutes")
     body('runtime')
+      .trim()
       .notEmpty()
       .withMessage('Runtime is required')
-      .isInt({ min: 1, max: 500 })
-      .withMessage('Runtime must be between 1 and 500 minutes'),
+      .custom((value) => {
+        // More flexible runtime validation
+        const runtimeRegex = /^\d+\s+(hour|hours|hr|hrs)?\s*(\d+\s+(minute|minutes|min|mins))?$/i;
+        if (!runtimeRegex.test(value) && !value.match(/\d+\s+(minutes?|mins?)/i)) {
+          throw new Error('Runtime must be in format like "2 hours and 7 minutes" or "1 hour 50 minutes"');
+        }
+        return true;
+      }),
 
     body('rating')
       .notEmpty()
       .withMessage('Rating is required')
-      .isIn(['G', 'PG', 'PG-13', 'R'])
-      .withMessage('Rating must be one of: G, PG, PG-13, R'),
+      .isIn(['G', 'PG', 'PG-13', 'R', 'NR', 'TV-MA', 'TV-14', 'TV-PG'])
+      .withMessage('Rating must be a valid movie rating'),
 
     body('cast')
       .trim()
@@ -241,34 +257,46 @@ const movieValidationRules = {
       .trim()
       .isLength({ min: 2, max: 100 })
       .withMessage('Director name must be between 2 and 100 characters')
-      .matches(/^[a-zA-Z\s.'-]+$/)
+      .matches(/^[a-zA-Z\s.,'&-]+$/)
       .withMessage(
-        'Director name can only contain letters, spaces, periods, apostrophes, and hyphens',
+        'Director name can only contain letters, spaces, periods, commas, apostrophes, ampersands, and hyphens',
       ),
 
+    // FIXED: Genre should be a string for updates too
     body('genre')
       .optional()
-      .isArray()
-      .withMessage('Genre must be an array')
-      .custom((genres) => {
-        return genres.every(g => typeof g === 'string' && g.trim().length > 0);
-      })
-      .withMessage('All genres must be non-empty strings'),
+      .trim()
+      .isLength({ min: 2, max: 200 })
+      .withMessage('Genre must be between 2 and 200 characters'),
 
+    // FIXED: Release date validation for updates
     body('releaseDate')
       .optional()
-      .isISO8601()
-      .withMessage('Release date must be a valid date (YYYY-MM-DD)'),
+      .trim()
+      .custom((value) => {
+        const dateRegex = /^[A-Za-z]+\s+\d{1,2},\s+\d{4}$/;
+        if (!dateRegex.test(value)) {
+          throw new Error('Must be a valid date (e.g., "June 2, 2015" or "February 28, 2006")');
+        }
+        return true;
+      }),
 
+    // FIXED: Runtime validation for updates
     body('runtime')
       .optional()
-      .isInt({ min: 1, max: 500 })
-      .withMessage('Runtime must be between 1 and 500 minutes'),
+      .trim()
+      .custom((value) => {
+        const runtimeRegex = /^\d+\s+(hour|hours|hr|hrs)?\s*(\d+\s+(minute|minutes|min|mins))?$/i;
+        if (!runtimeRegex.test(value) && !value.match(/\d+\s+(minutes?|mins?)/i)) {
+          throw new Error('Runtime must be in format like "2 hours and 7 minutes" or "1 hour 50 minutes"');
+        }
+        return true;
+      }),
 
     body('rating')
       .optional()
-      .isIn(['G', 'PG', 'PG-13', 'R'])
-      .withMessage('Rating must be one of: G, PG, PG-13, R'),
+      .isIn(['G', 'PG', 'PG-13', 'R', 'NR', 'TV-MA', 'TV-14', 'TV-PG'])
+      .withMessage('Rating must be a valid movie rating'),
 
     body('cast')
       .optional()
@@ -305,9 +333,19 @@ const watchlistValidationRules = {
       .withMessage('Status must be one of: plan-to-watch, watching, completed'),
 
     body('userRating')
-      .optional()
-      .isFloat({ min: 0, max: 5 })
-      .withMessage('User rating must be between 0 and 5'),
+      // Allow null values
+      .optional({ nullable: true })  
+      .custom((value) => {
+        if (value === null || value === undefined || value === "null") {
+          // null is allowed
+          return true; 
+        }
+        const rating = Number(value);
+        if (isNaN(rating) || rating < 0 || rating > 5) {
+          throw new Error('User rating must be between 0 and 5');
+        }
+        return true;
+      }),
 
     body('reviewText')
       .optional()
@@ -316,14 +354,32 @@ const watchlistValidationRules = {
       .withMessage('Review text cannot exceed 2000 characters'),
 
     body('startedWatching')
-      .optional()
-      .isISO8601()
-      .withMessage('Started watching must be a valid date'),
+      .optional({ nullable: true })  // Allow null values
+      .custom((value) => {
+        if (value === null || value === undefined || value === "null") {
+          return true; // null is allowed
+        }
+        // Check if it matches your date format "Month DD, YYYY"
+        const dateRegex = /^[A-Za-z]+\s+\d{1,2},\s+\d{4}$/;
+        if (!dateRegex.test(value)) {
+          throw new Error('Started watching must be a valid date (e.g., "March 15, 2024")');
+        }
+        return true;
+      }),
 
     body('completedDate')
-      .optional()
-      .isISO8601()
-      .withMessage('Completed date must be a valid date'),
+      .optional({ nullable: true })  // Allow null values
+      .custom((value) => {
+        if (value === null || value === undefined || value === "null") {
+          return true; // null is allowed
+        }
+        // Check if it matches your date format "Month DD, YYYY"
+        const dateRegex = /^[A-Za-z]+\s+\d{1,2},\s+\d{4}$/;
+        if (!dateRegex.test(value)) {
+          throw new Error('Completed date must be a valid date (e.g., "March 15, 2024")');
+        }
+        return true;
+      }),
 
     body('rewatchCount')
       .optional()
@@ -342,9 +398,17 @@ const watchlistValidationRules = {
       .withMessage('Status must be one of: plan-to-watch, watching, completed'),
 
     body('userRating')
-      .optional()
-      .isFloat({ min: 0, max: 5 })
-      .withMessage('User rating must be between 0 and 5'),
+      .optional({ nullable: true })
+      .custom((value) => {
+        if (value === null || value === undefined || value === "null") {
+          return true;
+        }
+        const rating = Number(value);
+        if (isNaN(rating) || rating < 0 || rating > 5) {
+          throw new Error('User rating must be between 0 and 5');
+        }
+        return true;
+      }),
 
     body('reviewText')
       .optional()
@@ -353,14 +417,31 @@ const watchlistValidationRules = {
       .withMessage('Review text cannot exceed 2000 characters'),
 
     body('startedWatching')
-      .optional()
-      .isISO8601()
-      .withMessage('Started watching must be a valid date'),
+      .optional({ nullable: true })
+      .custom((value) => {
+        if (value === null || value === undefined || value === "null") {
+          return true;
+        }
+        const dateRegex = /^[A-Za-z]+\s+\d{1,2},\s+\d{4}$/;
+        if (!dateRegex.test(value)) {
+          throw new Error('Started watching must be a valid date (e.g., "March 15, 2024")');
+        }
+        return true;
+      }),
 
     body('completedDate')
-      .optional()
-      .isISO8601()
-      .withMessage('Completed date must be a valid date'),
+      .optional({ nullable: true })
+      .custom((value) => {
+        if (value === null || value === undefined || value === "null") {
+          return true;
+        }
+        const dateRegex = /^[A-Za-z]+\s+\d{1,2},\s+\d{4}$/;
+        if (!dateRegex.test(value)) {
+          throw new Error('Completed date must be a valid date (e.g., "March 15, 2024")');
+        }
+        return true;
+      }),
+
 
     body('rewatchCount')
       .optional()

@@ -13,7 +13,7 @@ const getAllMovies = async (req, res) => {
 
     res.status(200).json(result);
   } catch (err) {
-    res.status(500).json({ message: 'err.message' });
+    res.status(500).json({ message: err.message });
   }
 };
 
@@ -37,59 +37,15 @@ const getMovieById = async (req, res) => {
   }
 };
 
-// const getMovieById = async (req, res) => {
-//   try {
-//     const id = req.params.id;
-//     console.log('Searching for movie with ID:', id);
-//     console.log('ID type:', typeof id);
-    
-//     // Try searching as string first (without converting to ObjectId)
-//     const result = await mongodb
-//       .getDb()
-//       .collection('movies')
-//       .findOne({ _id: id });  // Search as string
-    
-//     console.log('Result as string search:', result ? 'Found' : 'Not found');
-    
-//     if (!result) {
-//       // If not found as string, try as ObjectId
-//       try {
-//         const objectId = new ObjectId(id);
-//         console.log('Trying as ObjectId:', objectId);
-        
-//         const result2 = await mongodb
-//           .getDb()
-//           .collection('movies')
-//           .findOne({ _id: objectId });
-        
-//         console.log('Result as ObjectId search:', result2 ? 'Found' : 'Not found');
-        
-//         if (!result2) {
-//           return res.status(404).json({ message: 'Movie not found' });
-//         }
-//         return res.status(200).json(result2);
-//       } catch (objectIdError) {
-//         console.log('Invalid ObjectId format:', objectIdError.message);
-//         return res.status(404).json({ message: 'Movie not found' });
-//       }
-//     }
-    
-//     res.status(200).json(result);
-//   } catch (err) {
-//     console.error('Error in getMovieById:', err);
-//     res.status(500).json({ message: err.message });
-//   }
-// };
-
-// Use POST to create a contact
+// Use POST to create a movie
 const createMovie = async (req, res) => {
   try {
     const movie = {
       title: req.body.title,
       director: req.body.director,
-      genre: req.body.genre,
-      releaseDate: req.body.releaseDate ? new Date(req.body.releaseDate) : null,
-      runtime: req.body.runtime,
+      genre: req.body.genre, // Now stored as string, not array
+      releaseDate: req.body.releaseDate, // Keep as string (e.g., "June 2, 2015")
+      runtime: req.body.runtime, // Keep as string (e.g., "2 hours and 7 minutes")
       rating: req.body.rating,
       cast: req.body.cast,
     };
@@ -124,17 +80,10 @@ const createMovie = async (req, res) => {
     }
 
     // Validate rating
-    const validRatings = ['G', 'PG', 'PG-13', 'R'];
+    const validRatings = ['G', 'PG', 'PG-13', 'R', 'NR', 'TV-MA', 'TV-14', 'TV-PG'];
     if (!validRatings.includes(movie.rating)) {
       return res.status(400).json({ 
-        message: 'Rating must be one of: G, PG, PG-13, R' 
-      });
-    }
-
-    // Validate runtime is positive
-    if (movie.runtime <= 0) {
-      return res.status(400).json({ 
-        message: 'Runtime must be a positive number' 
+        message: 'Rating must be one of: G, PG, PG-13, R, NR, TV-MA, TV-14, TV-PG' 
       });
     }
 
@@ -157,42 +106,36 @@ const updateMovie = async (req, res) => {
   try {
     const movieId = new ObjectId(req.params.id);
 
-    const movie = {
-      title: req.body.title,
-      director: req.body.director,
-      genre: req.body.genre,
-      releaseDate: req.body.releaseDate ? new Date(req.body.releaseDate) : null,
-      runtime: req.body.runtime,
-      rating: req.body.rating,
-      cast: req.body.cast,
-    };
+    // Build update object dynamically to only include fields that are provided
+    const updateFields = {};
+    
+    if (req.body.title !== undefined) updateFields.title = req.body.title;
+    if (req.body.director !== undefined) updateFields.director = req.body.director;
+    if (req.body.genre !== undefined) updateFields.genre = req.body.genre; // Keep as string
+    if (req.body.releaseDate !== undefined) updateFields.releaseDate = req.body.releaseDate; // Keep as string
+    if (req.body.runtime !== undefined) updateFields.runtime = req.body.runtime; // Keep as string
+    if (req.body.rating !== undefined) updateFields.rating = req.body.rating;
+    if (req.body.cast !== undefined) updateFields.cast = req.body.cast;
 
     // Validate rating if provided
     if (req.body.rating) {
-      const validRatings = ['G', 'PG', 'PG-13', 'R'];
-      if (!validRatings.includes(movie.rating)) {
+      const validRatings = ['G', 'PG', 'PG-13', 'R', 'NR', 'TV-MA', 'TV-14', 'TV-PG'];
+      if (!validRatings.includes(req.body.rating)) {
         return res.status(400).json({ 
-          message: 'Rating must be one of: G, PG, PG-13, R' 
+          message: 'Rating must be one of: G, PG, PG-13, R, NR, TV-MA, TV-14, TV-PG' 
         });
       }
     }
 
-    // Validate runtime if provided
-    if (req.body.runtime && movie.runtime <= 0) {
-      return res.status(400).json({ 
-        message: 'Runtime must be a positive number' 
-      });
-    }
-
-    // Check for duplicate movie (excluding current)
+    // Check for duplicate movie (excluding current) if title, director, or releaseDate is being updated
     if (req.body.title || req.body.director || req.body.releaseDate) {
       const existingMovie = await mongodb
         .getDb()
         .collection('movies')
         .findOne({
-          title: movie.title,
-          director: movie.director,
-          releaseDate: movie.releaseDate,
+          title: req.body.title || { $exists: true }, // Only check if title is provided
+          director: req.body.director || { $exists: true }, // Only check if director is provided
+          releaseDate: req.body.releaseDate || { $exists: true }, // Only check if releaseDate is provided
           _id: { $ne: movieId },
         });
 
@@ -203,10 +146,15 @@ const updateMovie = async (req, res) => {
       }
     }
 
+    // Only proceed with update if there are fields to update
+    if (Object.keys(updateFields).length === 0) {
+      return res.status(400).json({ message: 'No fields to update' });
+    }
+
     const response = await mongodb
       .getDb()
       .collection('movies')
-      .replaceOne({ _id: movieId }, { $set: movie });
+      .updateOne({ _id: movieId }, { $set: updateFields });
 
     if (response.matchedCount === 0) {
       return res.status(404).json({ message: 'Movie not found' });
@@ -224,7 +172,7 @@ const updateMovie = async (req, res) => {
   }
 };
 
-// Use DELETE to delete a contact
+// Use DELETE to delete a movie
 const deleteMovie = async (req, res) => {
   try {
     const movieId = new ObjectId(req.params.id);

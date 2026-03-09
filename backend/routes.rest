@@ -2,7 +2,6 @@
 GET http://localhost:3000/
 Content-Type: application/json
  
- 
 ### Get all movies
 GET http://localhost:3000/movies
 Content-Type: application/json
@@ -20,39 +19,41 @@ Content-Type: application/json
 {
   "title": "Nacha Libro",
   "director": "Jared Hess",
-  "genre": ["comedy"],
-  "releaseDate": "04/25/2017",
-  "runtime": "92 minutes",
+  "genre": "Comedy",
+  "releaseDate": "April 25, 2017",
+  "runtime": "1 hours 32 minutes",
   "rating": "PG",
   "cast": "Hector Jimenez, Jack Black"
 }
  
 ### Update a movie
-PUT http://localhost:3000/movies/69abb2fe4c9e9c43c724cce6
+PUT http://localhost:3000/movies/69af22515e88b8eebaec43b2
 Content-Type: application/json
  
 {
   "title": "Nacho Libre",
   "director": "Jared Hess",
-  "genre": ["comedy"],
-  "releaseDate": "04/25/2017",
-  "runtime": "92 minutes",
+  "genre": "Comedy",
+  "releaseDate": "April 25, 2017",
+  "runtime": "1 hours 32 minutes",
   "rating": "PG",
   "cast": "Hector Jimenez, Jack Black"
 }
  
 ### Delete a movie
-DELETE http://localhost:3000/movies/69abb2fe4c9e9c43c724cce6
+DELETE http://localhost:3000/movies/69af22515e88b8eebaec43b2
 Content-Type: application/json
  
+
+
+
 ### Get all users
 GET http://localhost:3000/users
  
 ### Get user by ID
-GET http://localhost:3000/users/69843aa57ce7232969cc8688
+GET http://localhost:3000/users/69a610d1975615bcb31f4700
  
- 
-### Create user
+ ### Create user
 POST http://localhost:3000/users
 Content-Type: application/json
  
@@ -62,39 +63,113 @@ Content-Type: application/json
     "firstName": "Jane",
     "lastName": "Eyre",
     "email": "jeyre@gmail.com",
-    "date": "01/10/2024"
-  }
- 
+    "date": "01/10/2024",
+    "createdDate": "03/09/2026"
+}
  
 ### Update a user
-PUT http://localhost:3000/users/699812ef112aaa318ae35d83
+PUT http://localhost:3000/users/69af22b95e88b8eebaec43b3
 Content-Type: application/json
  
 {
-    "_id": "699cdc237263b2086f531188",
-    "displayName": "Mitchelle Garrett",
-    "firstName": "Mitchelle",
-    "lastName": "Garrett",
-    "email": "magarrett77@gmail.com",
-    "profilePhoto": "https://lh3.googleusercontent.com/a/ACg8ocKbBo_B4OU_3G3IAWswJVIwoEV0uBskK7XTMJqSRzproQMLpA=s96-c",
-    "date": "02/23/2026"
+    "googleId": "123456789012345678903",
+    "displayName": "Jane Eyre",
+    "firstName": "Jane",
+    "lastName": "Eyre",
+    "email": "jeyre@gmail.com",
+    "date": "01/10/2024",
+    "createdDate": "03/09/2026"
 }
  
 ### Delete a user
-DELETE http://localhost:3000/users/699812ef112aaa318ae35d83
+DELETE http://localhost:3000/users/69af22b95e88b8eebaec43b3
 Content-Type: application/json
  
  
-### Create user
-# POST http://localhost:8080/auth/google
-# Content-Type: application/json
- 
-# {
-#     "_id": "69843aa57ce7232969cc8688",
-#     "googleId": "123456789012345678903",
-#     "displayName": "Jane Eyre",
-#     "firstName": "Jane",
-#     "lastName": "Eyre",
-#     "email": "jane.eyre@gmail.com",
-#     "date": "01/10/2024"
-# }
+
+
+### Get all watchlist items
+GET http://localhost:3000/watchlist
+Content-Type: application/json
+
+### Get watchlist item by ID (Pride and Prejudice)
+GET http://localhost:3000/watchlist/69a612bc975615bcb31f4709
+Content-Type: application/json
+
+### Create a new watchlist item (Jupiter Ascending for James Bond)
+POST http://localhost:3000/watchlist
+Content-Type: application/json
+
+{
+    "userId": "69a610f4975615bcb31f4702",
+    "movieId": "69a60fe0975615bcb31f46f3",
+    "addedDate": "March 15, 2024",
+    "status": "plan-to-watch",
+    "userRating": null,
+    "reviewText": "Looking forward to watching this sci-fi epic",
+    "startedWatching": null,
+    "completedDate": null,
+    "rewatchCount": 0
+}
+
+### Update watchlist item status (Mark as watching)
+PUT http://localhost:3000/watchlist/69af4580fe083155c802eeb7
+Content-Type: application/json
+
+{
+    "userId": "69a610f4975615bcb31f4702",
+    "status": "completed",
+    "userRating": "5",
+    "reviewText": "It was great! I really loved this movie. Would recommend to Howard.",
+    "startedWatching": "March 9, 2026",
+    "completedDate": "March 9, 2026",
+    "rewatchCount": 0
+}
+
+### Delete watchlist item (Use with caution - only if you want to delete)
+DELETE http://localhost:3000/watchlist/69af4580fe083155c802eeb7
+Content-Type: application/json
+
+{
+    "userId": "69a610f4975615bcb31f4702"
+}
+
+
+
+
+### Get all awards
+GET http://localhost:3000/awards
+Content-Type: application/json
+
+### Get awards by movie ID (Pride and Prejudice)
+GET http://localhost:3000/awards/movie/69a61005975615bcb31f46f5
+Content-Type: application/json
+
+### Create another award for Pride and Prejudice
+POST http://localhost:3000/awards
+Content-Type: application/json
+
+{
+    "movieId": "69a61005975615bcb31f46f5",
+    "awardName": "BAFTO",
+    "category": "Best Actress",
+    "year": 2016,
+    "winner": false,
+    "recipient": "Keira Knightley"
+}
+
+### Update an award (replace {AWARD_ID} with actual ID)
+PUT http://localhost:3000/awards/69af4dda04c2333b744d333a
+Content-Type: application/json
+
+{
+    "awardName": "BAFTA",
+    "category": "Best Actress",
+    "year": 2006,
+    "winner": false,
+    "recipient": "Keira Knightley"
+}
+
+### Delete an award (replace {AWARD_ID} with actual ID)
+DELETE http://localhost:3000/awards/69af4acb04c2333b744d3338
+Content-Type: application/json
