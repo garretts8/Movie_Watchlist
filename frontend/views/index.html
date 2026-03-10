@@ -3,38 +3,81 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Movie Showcase</title>
-    <link rel="stylesheet" href="public/css/styles.css" />
+    <title>My Next Watch</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <!-- Movie Display -->
-    <div class="movie-container">
-      <img class="movie-poster" src="poster.jpg" alt="Movie Poster" />
-      <h1 class="movie-title">Movie Title Here</h1>
-    </div>
-
     <!-- Login Modal -->
-    <div class="modal-overlay" id="loginModal">
-      <div class="modal-box">
-        <h2>Sign In</h2>
-        <input type="text" id="username" placeholder="Username" />
-        <input type="password" id="password" placeholder="Password" />
-        <button class="login-btn" onclick="login()">Login</button>
+    <div id="loginModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="modal-header">
+          <i class="fas fa-headphones fa-3x"></i>
+          <h2>Welcome to The Listening Booth</h2>
+          <p>Sign in to start your audiobook journey</p>
+        </div>
+        <div class="modal-body">
+          <button id="googleLoginBtn" class="google-btn">
+            </i> LOG IN WITH GOOGLE
+          </button>
+        </div>
       </div>
     </div>
 
-    <script>
-      function login() {
-        const user = document.getElementById('username').value;
-        const pass = document.getElementById('password').value;
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="nav-logo">
+          <i class="fas fa-headphones"></i>
+          <span>My Next Watch</span>
+        </div>
+        <div class="menu-toggle" id="menuToggle">
+          <i class="fas fa-bars"></i>
+        </div>
+        <ul class="nav-menu" id="navMenu">
+          <li><a href="#" class="nav-link active">Home</a></li>
+          <li><a href="#" class="nav-link">Movies</a></li>
+          <li><a href="#" class="nav-link">TV Shows</a></li>
+          <li><a href="#" class="nav-link">My List</a></li>
+        </ul>
+        <div class="nav-icons">
+          <i class="fas fa-search"></i>
+          <i class="fas fa-user" id="userIcon"></i>
+          <i class="fas fa-heart"></i>
+        </div>
+      </div>
+    </nav>
 
-        if (user.trim() !== '' && pass.trim() !== '') {
-          document.getElementById('loginModal').style.display = 'none';
-          document.body.style.overflow = 'auto'; // Allow scrolling again
-        } else {
-          alert('Please enter both username and password.');
-        }
-      }
-    </script>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Never Miss Your Next Favorite Movie</h1>
+        <p>Create and manage your personal watchlist</p>
+        <button class="btn-primary" id="ctaButton">Start Building</button>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <h3>My Next Watch</h3>
+          <p>Your personal movie watchlist companion</p>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2024 The Listening Booth</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="js/script.js"></script>
   </body>
 </html>
