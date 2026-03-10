@@ -1,10 +1,10 @@
 const swaggerAutogen = require('swagger-autogen')({ openapi: '3.0.0' });
 const dotenv = require('dotenv');
-
+ 
 dotenv.config({ path: './.env' });
-
+ 
 const isProduction = process.env.RENDER === 'true' || process.env.NODE_ENV === 'production';
-
+ 
 const doc = {
   info: {
     title: 'Movie Watchlist API',
@@ -20,10 +20,10 @@ const doc = {
   schemes: isProduction ? ['https'] : ['http', 'https'],
   consumes: ['application/json'],
   produces: ['application/json'],
-
+ 
   // No security definitions since OAuth is not implemented yet
   security: [],
-
+ 
   definitions: {
     Movie: {
       type: 'object',
@@ -39,7 +39,7 @@ const doc = {
       },
       required: ['title', 'director', 'genre', 'releaseDate', 'runtime', 'rating', 'cast'],
     },
-    
+   
     User: {
       type: 'object',
       properties: {
@@ -53,7 +53,7 @@ const doc = {
       },
       required: ['googleId', 'displayName', 'firstName', 'lastName', 'email', 'createdDate'],
     },
-    
+   
     WatchlistItem: {
       type: 'object',
       properties: {
@@ -61,10 +61,10 @@ const doc = {
         userId: { type: 'string', example: '69a610d1975615bcb31f4700' },
         movieId: { type: 'string', example: '69a60fe0975615bcb31f46f3' },
         addedDate: { type: 'string', example: 'July 21, 2015' },
-        status: { 
-          type: 'string', 
-          example: 'completed', 
-          enum: ['plan-to-watch', 'watching', 'completed'] 
+        status: {
+          type: 'string',
+          example: 'completed',
+          enum: ['plan-to-watch', 'watching', 'completed']
         },
         userRating: { type: 'string', example: '5' },
         reviewText: { type: 'string', example: 'Great movie. Would recommend to Howard' },
@@ -74,7 +74,7 @@ const doc = {
       },
       required: ['userId', 'movieId', 'status'],
     },
-    
+   
     Award: {
       type: 'object',
       properties: {
@@ -88,7 +88,7 @@ const doc = {
       },
       required: ['movieId', 'awardName', 'category', 'year', 'recipient'],
     },
-    
+   
     // Request/Response models for Users
     UserResponse: {
       type: 'object',
@@ -97,19 +97,19 @@ const doc = {
         id: { type: 'string', example: '69a610d1975615bcb31f4700' },
       },
     },
-    
+   
     UserListResponse: {
       type: 'array',
       items: { $ref: '#/definitions/User' },
     },
-    
+   
     Error: {
       type: 'object',
       properties: {
         message: { type: 'string', example: 'Error message description' },
       },
     },
-    
+   
     ValidationError: {
       type: 'object',
       properties: {
@@ -117,7 +117,7 @@ const doc = {
       },
     },
   },
-  
+ 
   paths: {
     // User endpoints
     '/users': {
@@ -204,7 +204,7 @@ const doc = {
         },
       },
     },
-    
+   
     '/users/{id}': {
       get: {
         tags: ['Users'],
@@ -299,6 +299,19 @@ const doc = {
               },
             },
           },
+          200: {
+            description: 'User data is already up to date',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    message: { type: 'string', example: 'User data is already up to date' },
+                  },
+                },
+              },
+            },
+          },
           404: {
             description: 'User not found',
             content: {
@@ -374,7 +387,7 @@ const doc = {
         },
       },
     },
-    
+   
     // Movie endpoints
     '/movies': {
       get: {
@@ -457,7 +470,7 @@ const doc = {
         },
       },
     },
-    
+   
     '/movies/{id}': {
       get: {
         tags: ['Movies'],
@@ -615,7 +628,7 @@ const doc = {
         },
       },
     },
-    
+   
     // Watchlist endpoints
     '/watchlist': {
       get: {
@@ -706,7 +719,7 @@ const doc = {
         },
       },
     },
-    
+   
     '/watchlist/{id}': {
       get: {
         tags: ['Watchlist'],
@@ -866,7 +879,7 @@ const doc = {
         },
       },
     },
-    
+   
     // Awards endpoints
     '/awards': {
       get: {
@@ -949,7 +962,7 @@ const doc = {
         },
       },
     },
-    
+   
     '/awards/movie/{movieId}': {
       get: {
         tags: ['Awards'],
@@ -990,7 +1003,7 @@ const doc = {
         },
       },
     },
-    
+   
     '/awards/{id}': {
       get: {
         tags: ['Awards'],
@@ -1150,7 +1163,7 @@ const doc = {
       },
     },
   },
-  
+ 
   tags: [
     {
       name: 'Users',
@@ -1170,12 +1183,12 @@ const doc = {
     },
   ],
 };
-
+ 
 const outputFile = './swagger.json';
 const endpointsFiles = [
   './routes/index.js', // This will capture all routes mounted in index
 ];
-
+ 
 // Generate swagger.json
 swaggerAutogen(outputFile, endpointsFiles, doc)
   .then(() => {
