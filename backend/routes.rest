@@ -27,7 +27,7 @@ Content-Type: application/json
 }
  
 ### Update a movie
-PUT http://localhost:3000/movies/69af22515e88b8eebaec43b2
+PUT http://localhost:3000/movies/69af5c7fc9b66d29609b4be4
 Content-Type: application/json
  
 {
@@ -41,7 +41,7 @@ Content-Type: application/json
 }
  
 ### Delete a movie
-DELETE http://localhost:3000/movies/69af22515e88b8eebaec43b2
+DELETE http://localhost:3000/movies/69af5c7fc9b66d29609b4be4
 Content-Type: application/json
  
 
@@ -53,7 +53,7 @@ GET http://localhost:3000/users
 ### Get user by ID
 GET http://localhost:3000/users/69a610d1975615bcb31f4700
  
- ### Create user
+### Create user
 POST http://localhost:3000/users
 Content-Type: application/json
  
@@ -68,7 +68,7 @@ Content-Type: application/json
 }
  
 ### Update a user
-PUT http://localhost:3000/users/69af22b95e88b8eebaec43b3
+PUT http://localhost:3000/users/69af80394652d336a2248376
 Content-Type: application/json
  
 {
@@ -82,7 +82,7 @@ Content-Type: application/json
 }
  
 ### Delete a user
-DELETE http://localhost:3000/users/69af22b95e88b8eebaec43b3
+DELETE http://localhost:3000/users/69af80394652d336a2248376
 Content-Type: application/json
  
  
@@ -113,7 +113,7 @@ Content-Type: application/json
 }
 
 ### Update watchlist item status (Mark as watching)
-PUT http://localhost:3000/watchlist/69af4580fe083155c802eeb7
+PUT http://localhost:3000/watchlist/69af518204c2333b744d333f
 Content-Type: application/json
 
 {
@@ -127,7 +127,7 @@ Content-Type: application/json
 }
 
 ### Delete watchlist item (Use with caution - only if you want to delete)
-DELETE http://localhost:3000/watchlist/69af4580fe083155c802eeb7
+DELETE http://localhost:3000/watchlist/69af518204c2333b744d333f
 Content-Type: application/json
 
 {
@@ -159,7 +159,7 @@ Content-Type: application/json
 }
 
 ### Update an award (replace {AWARD_ID} with actual ID)
-PUT http://localhost:3000/awards/69af4dda04c2333b744d333a
+PUT http://localhost:3000/awards/69af51ee04c2333b744d3340
 Content-Type: application/json
 
 {
@@ -171,5 +171,5 @@ Content-Type: application/json
 }
 
 ### Delete an award (replace {AWARD_ID} with actual ID)
-DELETE http://localhost:3000/awards/69af4acb04c2333b744d3338
+DELETE http://localhost:3000/awards/69af51ee04c2333b744d3340
 Content-Type: application/json
