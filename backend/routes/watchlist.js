@@ -1,6 +1,7 @@
 const routes = require('express').Router();
 const watchlistController = require('../controllers/watchlist');
 const { watchlistValidationRules } = require('../middleware/validation');
+// const { isAuthenticated } = require('../middleware/auth');
 
 // GET all watchlist items
 routes.get('/', watchlistController.getUserWatchlist);

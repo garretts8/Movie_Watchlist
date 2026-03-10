@@ -1,4 +1,3 @@
-// Add this as the VERY FIRST LINES
 const dns = require('dns');
 dns.setDefaultResultOrder('ipv4first');
 dns.setServers(['8.8.8.8', '8.8.4.4']); 
@@ -6,6 +5,7 @@ dns.setServers(['8.8.8.8', '8.8.4.4']);
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const path = require('path');
 const mongodb = require('./db/connect');
 const morgan = require('morgan');
 
@@ -20,12 +20,26 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Root route (simple, doesn't need DB)
+// frontend files 
+const frontendViewsPath = path.join(__dirname, '../frontend/views');
+const frontendCssPath = path.join(__dirname, '../frontend/css');
+const frontendJsPath = path.join(__dirname, '../frontend/js');
+
+console.log('Looking for frontend files in:', frontendViewsPath);
+
+// Serve static files from the correct directories
+app.use(express.static(frontendViewsPath));
+app.use('/css', express.static(frontendCssPath));
+app.use('/js', express.static(frontendJsPath));
+
+// Root route - serve frontend HTML
 app.get("/", (req, res) => {
-    res.send("Movie Watchlist API is running");
+    const indexPath = path.join(frontendViewsPath, 'index.html');
+    console.log('Attempting to serve:', indexPath);
+    res.sendFile(indexPath);
 });
 
-// Debug route (needs DB, but we'll handle errors)
+// Debug route 
 app.get('/debug-watchlist-raw', async (req, res) => {
   try {
     // Check if DB is initialized
@@ -88,11 +102,13 @@ mongodb
     
     app.listen(PORT, () => {
         console.log(`Server running on port ${PORT}`);
+        console.log(`Frontend: http://localhost:${PORT}`);
         console.log(`API endpoints:`);
         console.log(`  - http://localhost:${PORT}/movies`);
         console.log(`  - http://localhost:${PORT}/users`);
         console.log(`  - http://localhost:${PORT}/watchlist`);
         console.log(`  - http://localhost:${PORT}/awards`);
+        console.log(`  - http://localhost:${PORT}/api-docs`);
     });
   })
   .catch((err) => {
