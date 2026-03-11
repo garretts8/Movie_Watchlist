@@ -43,9 +43,9 @@ const createMovie = async (req, res) => {
     const movie = {
       title: req.body.title,
       director: req.body.director,
-      genre: req.body.genre, // Now stored as string, not array
-      releaseDate: req.body.releaseDate, // Keep as string (e.g., "June 2, 2015")
-      runtime: req.body.runtime, // Keep as string (e.g., "2 hours and 7 minutes")
+      genre: req.body.genre, 
+      releaseDate: req.body.releaseDate, 
+      runtime: req.body.runtime, 
       rating: req.body.rating,
       cast: req.body.cast,
     };
@@ -111,9 +111,9 @@ const updateMovie = async (req, res) => {
     
     if (req.body.title !== undefined) updateFields.title = req.body.title;
     if (req.body.director !== undefined) updateFields.director = req.body.director;
-    if (req.body.genre !== undefined) updateFields.genre = req.body.genre; // Keep as string
-    if (req.body.releaseDate !== undefined) updateFields.releaseDate = req.body.releaseDate; // Keep as string
-    if (req.body.runtime !== undefined) updateFields.runtime = req.body.runtime; // Keep as string
+    if (req.body.genre !== undefined) updateFields.genre = req.body.genre; 
+    if (req.body.releaseDate !== undefined) updateFields.releaseDate = req.body.releaseDate; 
+    if (req.body.runtime !== undefined) updateFields.runtime = req.body.runtime; 
     if (req.body.rating !== undefined) updateFields.rating = req.body.rating;
     if (req.body.cast !== undefined) updateFields.cast = req.body.cast;
 
@@ -133,9 +133,9 @@ const updateMovie = async (req, res) => {
         .getDb()
         .collection('movies')
         .findOne({
-          title: req.body.title || { $exists: true }, // Only check if title is provided
-          director: req.body.director || { $exists: true }, // Only check if director is provided
-          releaseDate: req.body.releaseDate || { $exists: true }, // Only check if releaseDate is provided
+          title: req.body.title || { $exists: true }, 
+          director: req.body.director || { $exists: true }, 
+          releaseDate: req.body.releaseDate || { $exists: true }, 
           _id: { $ne: movieId },
         });
 
