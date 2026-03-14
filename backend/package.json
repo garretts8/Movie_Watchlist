@@ -9,23 +9,26 @@
     "dev": "nodemon server.js",
     "swagger": "node swagger.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "connect-mongo": "^6.0.0",
+    "connect-mongodb-session": "^5.0.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
+    "express-session": "^1.19.0",
     "express-validator": "^7.3.1",
+    "jsonwebtoken": "^9.0.3",
     "mongodb": "^7.1.0",
     "morgan": "^1.10.1",
-    "node": "^22.22.1",
-    "swagger": "^0.7.5",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "swagger-autogen": "^2.23.7",
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14",
-    "swagger-autogen": "^2.23.7"
+    "cross-env": "^10.1.0",
+    "nodemon": "^3.1.14"
   }
 }
