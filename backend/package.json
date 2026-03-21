@@ -12,6 +12,7 @@
     "test:coverage": "jest --coverage --testTimeout=10000",
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "swagger:prod": "cross-env NODE_ENV=production node swagger.js",
     "swagger": "node swagger.js"
   },
   "dependencies": {
