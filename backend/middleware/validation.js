@@ -26,15 +26,17 @@ const userValidationRules = {
       .trim()
       .notEmpty()
       .withMessage('Google ID is required')
-      .isLength({ min: 5, max: 100 })
-      .withMessage('Google ID must be between 5 and 100 characters'),
+      .isLength({ min: 21, max: 21 })
+      .withMessage('Google ID must be 21 characters'),
 
     body('displayName')
       .trim()
       .notEmpty()
       .withMessage('Display name is required')
       .isLength({ min: 2, max: 100 })
-      .withMessage('Display name must be between 2 and 100 characters'),
+      .withMessage('Display name must be between 2 and 100 characters')
+      .matches(/^[a-zA-Z\s.'-]+$/)
+      .withMessage('Display name must contain only letters, spaces, periods, apostrophes, and hyphens'),
 
     body('firstName')
       .trim()
@@ -93,13 +95,13 @@ const userValidationRules = {
   ],
 
   update: [
-    param('id').isMongoId().withMessage('Invalid user ID format'),
+    param('id').isMongoId().withMessage('Invalid user ID format - must be 24 character hex string'),
 
     body('googleId')
       .optional()
       .trim()
-      .isLength({ min: 5, max: 100 })
-      .withMessage('Google ID must be between 5 and 100 characters'),
+      .isLength({ min: 21, max: 21 })
+      .withMessage('Google ID must be 21 characters'),
 
     body('displayName')
       .optional()
@@ -160,12 +162,12 @@ const userValidationRules = {
   ],
 
   getById: [
-    param('id').isMongoId().withMessage('Invalid user ID format'),
+    param('id').isMongoId().withMessage('Invalid user ID format - must be 24 character hex string'),
     handleValidationErrors,
   ],
 
   delete: [
-    param('id').isMongoId().withMessage('Invalid user ID format'),
+    param('id').isMongoId().withMessage('Invalid user ID format - must be 24 character hex string'),
     handleValidationErrors,
   ],
 };
@@ -191,7 +193,7 @@ const movieValidationRules = {
         'Director name can only contain letters, spaces, periods, commas, apostrophes, ampersands, and hyphens',
       ),
 
-    // FIXED: Genre should be a string, not an array
+    // Genre should be a string, not an array
     body('genre')
       .trim()
       .notEmpty()
@@ -199,7 +201,7 @@ const movieValidationRules = {
       .isLength({ min: 2, max: 200 })
       .withMessage('Genre must be between 2 and 200 characters'),
 
-    // FIXED: Release date should match database format (e.g., "June 2, 2015")
+    //Release date should match database format (e.g., "June 2, 2015")
     body('releaseDate')
       .trim()
       .notEmpty()
@@ -213,7 +215,7 @@ const movieValidationRules = {
         return true;
       }),
 
-    // FIXED: Runtime should match database format (e.g., "2 hours and 7 minutes")
+    // Runtime should match database format (e.g., "2 hours and 7 minutes")
     body('runtime')
       .trim()
       .notEmpty()
@@ -262,14 +264,14 @@ const movieValidationRules = {
         'Director name can only contain letters, spaces, periods, commas, apostrophes, ampersands, and hyphens',
       ),
 
-    // FIXED: Genre should be a string for updates too
+    //Genre should be a string for updates too
     body('genre')
       .optional()
       .trim()
       .isLength({ min: 2, max: 200 })
       .withMessage('Genre must be between 2 and 200 characters'),
 
-    // FIXED: Release date validation for updates
+    // Release date validation for updates
     body('releaseDate')
       .optional()
       .trim()
@@ -281,7 +283,7 @@ const movieValidationRules = {
         return true;
       }),
 
-    // FIXED: Runtime validation for updates
+    // Runtime validation for updates
     body('runtime')
       .optional()
       .trim()
@@ -321,11 +323,28 @@ const movieValidationRules = {
 // Watchlist validation rules
 const watchlistValidationRules = {
   create: [
+      body('userId')
+      .notEmpty()
+      .withMessage('User ID is required')
+      .isMongoId()
+      .withMessage('Invalid user ID format - must be a 24 character hex string'),
+
     body('movieId')
       .notEmpty()
       .withMessage('Movie ID is required')
       .isMongoId()
       .withMessage('Invalid movie ID format'),
+    
+    body('addedDate')
+      .notEmpty()
+      .withMessage('Added date is required')
+      .custom((value) => {
+        const dateRegex = /^[A-Za-z]+\s+\d{1,2},\s+\d{4}$/;
+        if (!dateRegex.test(value)) {
+          throw new Error('Added date must be in format like "March 15, 2024"');
+        }
+        return true;
+    }),
 
     body('status')
       .optional()
@@ -392,6 +411,11 @@ const watchlistValidationRules = {
   update: [
     param('id').isMongoId().withMessage('Invalid watchlist item ID format'),
 
+    body('userId')
+      .optional()
+      .isMongoId()
+      .withMessage('Invalid user ID format - must be a 24 character hex string'),
+
     body('status')
       .optional()
       .isIn(['plan-to-watch', 'watching', 'completed'])
@@ -441,7 +465,6 @@ const watchlistValidationRules = {
         }
         return true;
       }),
-
 
     body('rewatchCount')
       .optional()

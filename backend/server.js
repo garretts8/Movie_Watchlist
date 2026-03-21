@@ -20,6 +20,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const isProduction = keys.isProduction;
 
+// Function to configure the app (reusable for both test and production)
+const configureApp = () => {
 app.set('trust proxy', 1);
 
 // Session configuration with MongoDB store for production
@@ -139,27 +141,53 @@ app.get('/debug-watchlist-raw', async (req, res) => {
   }
 });
 
-// Start server - connect to DB FIRST, THEN load routes
-mongodb
-  .initDb()
-  .then(() => {
-    console.log('Database connected, now loading routes...');
-    
-    // Load routes ONLY after DB is connected
-    app.use('/', require('./routes/index'));
-    
-    // 404 handler
-    app.use((req, res) => {
-        res.status(404).json({ message: 'Route not found' });
-    });
 
-    // Error handler
-    app.use((err, req, res, next) => {
-        console.error(err.stack);
-        res.status(500).json({ message: err.message });
-    });
-    
-    app.listen(PORT, () => {
+// Load routes
+  app.use('/', require('./routes/index'));
+  
+  // 404 handler
+  app.use((req, res) => {
+      res.status(404).json({ message: 'Route not found' });
+  });
+
+  // Error handler
+  app.use((err, req, res, next) => {
+      console.error(err.stack);
+      res.status(500).json({ message: err.message });
+  });
+};
+
+// Function to initialize the app and database
+const initApp = async () => {
+  try {
+    await mongodb.initDb();
+    console.log('Database connected');
+    configureApp();
+    return app;
+  } catch (err) {
+    console.error('Failed to connect to database:', err);
+    throw err;
+  }
+};
+
+// Function to close database connection (useful for tests)
+const closeDb = async () => {
+  try {
+    const db = mongodb.getDb();
+    if (db && db.client) {
+      await db.client.close();
+      console.log('Database connection closed');
+    }
+  } catch (err) {
+    console.error('Error closing database:', err);
+  }
+};
+
+// Start server only if this file is run directly (not imported for testing)
+if (require.main === module) {
+  initApp()
+    .then(() => {
+      app.listen(PORT, () => {
         console.log(`Server running on port ${PORT}`);
         console.log(`Frontend: http://localhost:${PORT}`);
         console.log(`API endpoints:`);
@@ -168,9 +196,17 @@ mongodb
         console.log(`  - http://localhost:${PORT}/watchlist`);
         console.log(`  - http://localhost:${PORT}/awards`);
         console.log(`  - http://localhost:${PORT}/api-docs`);
+      });
+    })
+    .catch((err) => {
+      console.error('Failed to start server:', err);
+      process.exit(1);
     });
-  })
-  .catch((err) => {
-    console.error('Failed to connect to database:', err);
-    process.exit(1);
-  });
+}
+
+// Export for testing
+module.exports = { 
+  app, 
+  initApp,
+  closeDb
+};

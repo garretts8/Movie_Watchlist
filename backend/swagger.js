@@ -15,7 +15,7 @@ const doc = {
       email: 'support@moviewatchlist.com',
     },
   },
-  host: isProduction ? 'your-render-url.onrender.com' : 'localhost:3000',
+  host: isProduction ? 'https://movie-watchlist-1w1x.onrender.com' : 'localhost:3000',
   basePath: '/',
   schemes: isProduction ? ['https'] : ['http', 'https'],
   consumes: ['application/json'],

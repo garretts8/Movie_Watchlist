@@ -5,6 +5,8 @@ const { MongoClient } = require('mongodb');
 dotenv.config();
  
 let dbInstance;
+//Store the client so that we can close it later.
+let client;
  
 // Initializes and connects to the MongoDB database
 const initDb = async () => {
@@ -26,7 +28,7 @@ const initDb = async () => {
   /* ERROR HANDLING (runtime error):
   Attempts to connect to MongoDB and may fail if the server is unreachable  */
   try {
-    const client = new MongoClient(uri);
+    client = new MongoClient(uri);
     await client.connect();
     console.log('Connected to MongoDB successfully!');
  
@@ -55,10 +57,28 @@ const getDb = () => {
   }
   return dbInstance;
 };
+
+// Function to close the database connection (for testing).
+const closeDb = async () => {
+  try {
+    if (client) {
+      await client.close();
+      client = null;
+      dbInstance = null;
+      console.log('Database connection closed successfully');
+    } else {
+      console.log('No database connection to close');
+    }
+  } catch (err) {
+    console.error('Error closing database connection:', err);
+    throw err;
+  }
+};
  
 module.exports = {
   initDb,
   getDb,
+  closeDb,
 };
  
  
