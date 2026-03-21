@@ -5,6 +5,9 @@ dotenv.config({ path: './.env' });
  
 const isProduction = process.env.RENDER === 'true' || process.env.NODE_ENV === 'production';
  
+// Get the Render URL from environment or use localhost
+const renderUrl = process.env.RENDER_URL || 'https://movie-watchlist-1w1x.onrender.com';
+
 const doc = {
   info: {
     title: 'Movie Watchlist API',
@@ -15,14 +18,24 @@ const doc = {
       email: 'support@moviewatchlist.com',
     },
   },
-  host: isProduction ? 'https://movie-watchlist-1w1x.onrender.com' : 'localhost:3000',
+  host: isProduction ? 'movie-watchlist-1w1x.onrender.com' : 'localhost:3000',
   basePath: '/',
   schemes: isProduction ? ['https'] : ['http', 'https'],
   consumes: ['application/json'],
   produces: ['application/json'],
  
-  // No security definitions since OAuth is not implemented yet
-  security: [],
+  // Add authentication support
+  components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        description: 'Enter your JWT token. Format: Bearer <token>'
+      }
+    }
+  },
+  security: [{ bearerAuth: [] }],
  
   definitions: {
     Movie: {
