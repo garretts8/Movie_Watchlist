@@ -10,7 +10,8 @@ let createdTestIds = []; // Track created test items for cleanup
 let existingUserId = '69a610f4975615bcb31f4702'; // James Bond
 
 // Existing watchlist item ID (Jupiter Ascending)
-let existingWatchlistId = '69baf4d20471779be0c70b51';
+let existingWatchlistId = '69a61326975615bcb31f470f'; // Hook
+let existingMovieId = '69a61077975615bcb31f46fb'; // Hook
 
 // Unknown IDs
 let unknownUserId = '69a610f4975615bcb31f4709';
@@ -83,7 +84,7 @@ describe('Watchlist API - GET operations', () => {
         expect(res.body.length).toBeGreaterThan(0);
     });
 
-    test('GET /watchlist/:id - returned watchlist item with valid ID (Jupiter Ascending)', async () => {
+    test('GET /watchlist/:id - returned watchlist item with valid ID (Hook)', async () => {
         const res = await request(app)
             .get('/watchlist/' + existingWatchlistId)
             .set('Authorization', `Bearer ${authToken}`);
@@ -116,27 +117,27 @@ describe('Watchlist API - GET operations', () => {
 
 // Test suite for Watchlist API - POST create watchlist validation
 describe('Watchlist API - POST create watchlist validation', () => {
-    // Test 1: Try to create Jupiter Ascending (already exists)
-    test('POST /watchlist - returns 409 for duplicate Jupiter Ascending', async () => {
-        const payload = {
-            userId: "69a610f4975615bcb31f4702",
-            movieId: "69a60fe0975615bcb31f46f3",
-            addedDate: "March 15, 2024",
-            status: "plan-to-watch",
-            userRating: null,
-            reviewText: "Looking forward to watching this sci-fi epic",
-            startedWatching: null,
-            completedDate: null,
-            rewatchCount: 0
-        };
+    // Test 1: Try to create duplicate watchlist item (Hook is already in watchlist)
+    test('POST /watchlist - returns 409 for duplicate watchlist item', async () => {
+    const payload = {
+        userId: "69a610f4975615bcb31f4702", // James Bond
+        movieId: "69a61077975615bcb31f46fb", // Hook
+        addedDate: "June 2, 2015",
+        status: "plan-to-watch",
+        userRating: null,
+        reviewText: "Already in watchlist",
+        startedWatching: null,
+        completedDate: null,
+        rewatchCount: 0
+    };
 
-        const res = await request(app)
-            .post('/watchlist')
-            .set('Authorization', `Bearer ${authToken}`)
-            .send(payload);
+    const res = await request(app)
+        .post('/watchlist')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send(payload);
 
-        expect(res.status).toBe(409);
-        expect(res.body.message).toContain('Movie already in watchlist');
+    expect(res.status).toBe(409);
+    expect(res.body.message).toContain('Movie already in watchlist');
     });
 
     // Test 2: Missing field - validation should catch this

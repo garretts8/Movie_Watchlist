@@ -7,18 +7,20 @@ let authToken;
 let createdAwardId;
 let createdTestIds = []; // Track created test items for cleanup
 
-// Existing movie IDs from your database (these definitely exist)
+// Existing movie IDs from your database
 let existingMovieIds = [
     '69a60fe0975615bcb31f46f3', // Jupiter Ascending
+    '69a61005975615bcb31f46f5', // Pride and Prejudice
     '69a61024975615bcb31f46f7', // League of Extraordinary Gentlemen
     '69a61042975615bcb31f46f9', // Ever After
     '69a61077975615bcb31f46fb', // Hook
     '69a6179f975615bcb31f4720'  // Lord of the Rings
 ];
 
-// Use an existing movie that has awards
-let existingMovieWithAwards = '69a6179f975615bcb31f4720'; // Lord of the Rings
-let existingAwardId = '69a61fcc975615bcb31f4726'; // Lord of the Rings award
+// Use an existing award that definitely exists
+// From your awards collection, let's use Jupiter Ascending's award
+let existingAwardId = '69a61418975615bcb31f4714'; // Jupiter Ascending award
+let existingMovieWithAwards = '69a60fe0975615bcb31f46f3'; // Jupiter Ascending
 
 // Unknown IDs
 let unknownMovieId = '69a610f4975615bcb31f4709';
@@ -158,7 +160,7 @@ describe('Awards API - GET operations', () => {
         expect(res.body.length).toBeGreaterThan(0);
     });
 
-    test('GET /awards/:id - returned award with valid ID (Lord of the Rings)', async () => {
+    test('GET /awards/:id - returned award with valid ID (Jupiter Ascending)', async () => {
         const res = await request(app)
             .get('/awards/' + existingAwardId)
             .set('Authorization', `Bearer ${authToken}`);
@@ -171,12 +173,14 @@ describe('Awards API - GET operations', () => {
     });
 
     test('GET /awards/movie/:movieId - returned awards for specific movie', async () => {
+        // Use a movie that has awards - Jupiter Ascending has an award
         const res = await request(app)
             .get('/awards/movie/' + existingMovieWithAwards)
             .set('Authorization', `Bearer ${authToken}`);
 
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body)).toBe(true);
+        // Jupiter Ascending should have at least 1 award
         expect(res.body.length).toBeGreaterThan(0);
     });
 
@@ -397,30 +401,35 @@ describe('Awards API - POST create award validation', () => {
         expect(res.body.error).toBe('Validation failed');
     });
 
-    // Test 11: Valid year range
-    test('POST /awards - accepts valid year range', async () => {
-        const currentYear = new Date().getFullYear();
-        const validYears = [1900, 1950, 2000, currentYear, currentYear + 1];
+// Test 11: Valid year range
+test('POST /awards - accepts valid year range', async () => {
+    const currentYear = new Date().getFullYear();
+    const validYears = [1900, 1950, 2000, currentYear, currentYear + 1];
+    
+    for (const year of validYears) {
+        // Use a movie that definitely exists - Jupiter Ascending
+        const payload = {
+            movieId: '69a60fe0975615bcb31f46f3', // Jupiter Ascending
+            awardName: `Test Award ${year} ${Date.now()}`,
+            category: 'Best Picture',
+            year: year,
+            winner: false,
+            recipient: 'Test Recipient Name'
+        };
+
+        const res = await request(app)
+            .post('/awards')
+            .set('Authorization', `Bearer ${authToken}`)
+            .send(payload);
+
+        expect(res.status).toBe(201);
         
-        for (const year of validYears) {
-            const payload = makeCustomAwardPayload({
-                year: year,
-                awardName: `Test Award ${year} ${Date.now()}`
-            });
-
-            const res = await request(app)
-                .post('/awards')
-                .set('Authorization', `Bearer ${authToken}`)
-                .send(payload);
-
-            expect(res.status).toBe(201);
-            
-            // Clean up
-            if (res.body.id) {
-                createdTestIds.push(res.body.id);
-            }
+        // Clean up
+        if (res.body.id) {
+            createdTestIds.push(res.body.id);
         }
-    });
+    }
+});
 
     // Test 12: Winner boolean validation
     test('POST /awards - accepts winner as boolean', async () => {
@@ -497,9 +506,14 @@ describe('Awards API - PUT update award validation', () => {
 
     beforeAll(async () => {
         // Create a unique award for PUT tests using an existing movie
-        const payload = makeCustomAwardPayload({
-            awardName: `PUT Test Award ${Date.now()}`
-        });
+        const payload = {
+            movieId: '69a60fe0975615bcb31f46f3', // Jupiter Ascending - definitely exists
+            awardName: `PUT Test Award ${Date.now()}`,
+            category: 'Best Picture',
+            year: 2023,
+            winner: false,
+            recipient: 'Test Recipient for PUT'
+        };
 
         const createRes = await request(app)
             .post('/awards')
@@ -509,6 +523,9 @@ describe('Awards API - PUT update award validation', () => {
         if (createRes.status === 201) {
             testAwardId = createRes.body.id;
             createdTestIds.push(testAwardId);
+            console.log(`Created test award for PUT tests: ${testAwardId}`);
+        } else {
+            console.log('Failed to create test award for PUT tests');
         }
     });
 
