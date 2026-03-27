@@ -24,7 +24,7 @@ const doc = {
   consumes: ['application/json'],
   produces: ['application/json'],
  
-  // Add authentication support
+  // Add authentication support for both Bearer and Cookie
   components: {
     securitySchemes: {
       bearerAuth: {
@@ -32,11 +32,22 @@ const doc = {
         scheme: 'bearer',
         bearerFormat: 'JWT',
         description: 'Enter your JWT token. Format: Bearer <token>'
+      },
+      // ADD COOKIE AUTHENTICATION
+      cookieAuth: {
+        type: 'apiKey',
+        in: 'cookie',
+        name: 'token',
+        description: 'Authentication cookie (automatically sent after logging in through the web app)'
       }
     }
   },
-  security: [{ bearerAuth: [] }],
- 
+  // Support both authentication methods
+  security: [
+    { bearerAuth: [] },
+    { cookieAuth: [] }
+  ],
+  
   definitions: {
     Movie: {
       type: 'object',
@@ -130,8 +141,79 @@ const doc = {
       },
     },
   },
- 
+
   paths: {
+    // Authentication endpoints
+    '/auth/me': {
+      get: {
+        tags: ['Authentication'],
+        summary: 'Get current user',
+        description: 'Get the currently authenticated user information',
+        responses: {
+          200: {
+            description: 'User information retrieved',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    success: { type: 'boolean' },
+                    isAuthenticated: { type: 'boolean' },
+                    user: { $ref: '#/definitions/User' }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    '/auth/logout': {
+      get: {
+        tags: ['Authentication'],
+        summary: 'Logout',
+        description: 'Logout the current user and clear authentication cookies',
+        responses: {
+          200: {
+            description: 'Logged out successfully'
+          }
+        }
+      }
+    },
+    '/auth/verify': {
+      get: {
+        tags: ['Authentication'],
+        summary: 'Verify token',
+        description: 'Verify if the current JWT token is valid',
+        responses: {
+          200: {
+            description: 'Token is valid',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    success: { type: 'boolean' },
+                    user: {
+                      type: 'object',
+                      properties: {
+                        id: { type: 'string' },
+                        email: { type: 'string' },
+                        displayName: { type: 'string' }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          401: {
+            description: 'Invalid or missing token'
+          }
+        }
+      }
+    },
+    
     // User endpoints
     '/users': {
       get: {
@@ -1178,6 +1260,10 @@ const doc = {
   },
  
   tags: [
+    {
+      name: 'Authentication',
+      description: 'Authentication endpoints - Check auth status, logout, and verify token'
+    },
     {
       name: 'Users',
       description: 'User management endpoints - Create, read, update, and delete users',
