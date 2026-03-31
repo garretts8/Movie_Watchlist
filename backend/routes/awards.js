@@ -1,4 +1,3 @@
-
 const routes = require('express').Router();
 const awardController = require('../controllers/awards');
 const { awardValidationRules } = require('../middleware/validation');

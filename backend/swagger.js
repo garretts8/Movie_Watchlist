@@ -51,7 +51,7 @@ const doc = {
       },
       required: ['title', 'director', 'genre', 'releaseDate', 'runtime', 'rating', 'cast'],
     },
-    // Add other definitions as needed
+
   },
   tags: [
     {

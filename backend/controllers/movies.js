@@ -4,7 +4,6 @@ const mongodb = require('../db/connect');
 // To GET all movies
 const getAllMovies = async (req, res) => {
   try {
-    // now _db is already the 'test' database
     const result = await mongodb
       .getDb()
       .collection('movies')

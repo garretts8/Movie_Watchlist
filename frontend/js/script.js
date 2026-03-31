@@ -78,7 +78,6 @@ function addLogoutButton() {
 
 // Open modal
 function openModal() {
-  // Don't call checkLoginStatus() here - use the tracked variable instead
   if (isUserLoggedIn) {
     alert('You are already logged in!');
     return;
@@ -94,8 +93,6 @@ function closeModal() {
 }
 
 // Event listeners
-// REMOVE the userIcon event listener from here since it's now set in updateUIForLoggedOutUser()
-// if (userIcon) userIcon.addEventListener('click', openModal);  // <-- COMMENT THIS OUT or REMOVE
 if (ctaButton) ctaButton.addEventListener('click', openModal);
 if (closeBtn) closeBtn.addEventListener('click', closeModal);
 

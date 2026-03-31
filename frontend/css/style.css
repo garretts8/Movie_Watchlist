@@ -27,7 +27,8 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(23, 55, 83, 0.95); /* Navy deep with opacity */
+  /* Navy deep with opacity */
+  background: rgba(23, 55, 83, 0.95); 
   z-index: 1000;
 }
 
@@ -99,7 +100,8 @@ body {
 
 /* Logged in user indicator */
 .fa-user.logged-in {
-  color: #4caf50; /* Keeping green for logged-in status */
+  /* Keeping green for logged-in status */
+  color: #4caf50; 
 }
 
 /* Logout button */

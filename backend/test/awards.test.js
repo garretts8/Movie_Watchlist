@@ -5,20 +5,25 @@ const { app, initApp, closeDb } = require('../server');
 
 let authToken;
 let createdAwardId;
-let createdTestIds = []; // Track created test items for cleanup
-
+// Track created test items for cleanup
+let createdTestIds = []; 
 // Existing movie IDs from your database
 let existingMovieIds = [
-    '69a60fe0975615bcb31f46f3', // Jupiter Ascending
-    '69a61005975615bcb31f46f5', // Pride and Prejudice
-    '69a61024975615bcb31f46f7', // League of Extraordinary Gentlemen
-    '69a61042975615bcb31f46f9', // Ever After
-    '69a61077975615bcb31f46fb', // Hook
-    '69a6179f975615bcb31f4720'  // Lord of the Rings
+    // Jupiter Ascending
+    '69a60fe0975615bcb31f46f3', 
+    // Pride and Prejudice
+    '69a61005975615bcb31f46f5', 
+    // League of Extraordinary Gentlemen
+    '69a61024975615bcb31f46f7', 
+    // Ever After
+    '69a61042975615bcb31f46f9', 
+    // Hook
+    '69a61077975615bcb31f46fb', 
+    // Lord of the Rings
+    '69a6179f975615bcb31f4720'  
 ];
 
-// Use an existing award that definitely exists
-// From your awards collection, let's use Jupiter Ascending's award
+//Use Jupiter Ascending's award
 let existingAwardId = '69a61418975615bcb31f4714'; // Jupiter Ascending award
 let existingMovieWithAwards = '69a60fe0975615bcb31f46f3'; // Jupiter Ascending
 
@@ -53,7 +58,8 @@ const makeValidAwardPayload = () => {
 const makeExistingMovieAwardPayload = () => {
     const currentYear = new Date().getFullYear();
     return {
-        movieId: existingMovieIds[0], // Jupiter Ascending
+        // Jupiter Ascending
+        movieId: existingMovieIds[0], 
         awardName: `Test Award ${Date.now()}`,
         category: 'Best Actor',
         year: currentYear - 1,
@@ -256,12 +262,17 @@ describe('Awards API - POST create award validation', () => {
     // Test 3: Multiple validation failures
     test('POST /awards - returns 400 for multiple validation failures', async () => {
         const payload = {
-            movieId: '123', // Invalid length
-            awardName: 'A', // Too short
-            category: 'B', // Too short
-            year: 1800, // Too old
+            // Invalid length
+            movieId: '123', 
+            // Too short
+            awardName: 'A', 
+             // Too short
+            category: 'B',
+            // Too old
+            year: 1800, 
             winner: 'not-boolean',
-            recipient: 'R' // Too short
+            // Too short
+            recipient: 'R' 
         };
 
         const res = await request(app)
@@ -507,7 +518,8 @@ describe('Awards API - PUT update award validation', () => {
     beforeAll(async () => {
         // Create a unique award for PUT tests using an existing movie
         const payload = {
-            movieId: '69a60fe0975615bcb31f46f3', // Jupiter Ascending - definitely exists
+            // Jupiter Ascending
+            movieId: '69a60fe0975615bcb31f46f3', 
             awardName: `PUT Test Award ${Date.now()}`,
             category: 'Best Picture',
             year: 2023,
@@ -672,7 +684,7 @@ describe('Awards API - DELETE operations', () => {
     let testAwardId;
 
     beforeAll(async () => {
-        // Create a unique award for DELETE tests
+        // Created a unique award for DELETE tests
         const payload = makeCustomAwardPayload({
             awardName: `DELETE Test Award ${Date.now()}`
         });
@@ -802,7 +814,6 @@ describe('Awards API - CRUD operations with created award', () => {
         expect(res.status).toBe(200);
         expect(res.body.message).toBe('Award deleted successfully');
         
-        // Remove from tracking array since it's already deleted
         const index = createdTestIds.indexOf(testAwardId);
         if (index > -1) {
             createdTestIds.splice(index, 1);

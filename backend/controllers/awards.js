@@ -197,7 +197,7 @@ const createAward = async (req, res) => {
     console.log('Movie found:', movie.title);
 
     const award = {
-      movieId: movieId,  // Keep as string to match existing data format
+      movieId: movieId,  
       awardName: req.body.awardName,
       category: req.body.category,
       year: req.body.year,

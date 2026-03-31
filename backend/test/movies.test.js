@@ -6,9 +6,8 @@ const { app, initApp, closeDb } = require('../server');
 let authToken;
 let createdMovieId;
 
-// Get an existing movie from the database that hasn't been modified
-// Let's use one of the other movies from your database
-let existingMovieId = '69a61024975615bcb31f46f7'; // League of Extraordinary Gentlemen
+// League of Extraordinary Gentlemen
+let existingMovieId = '69a61024975615bcb31f46f7'; 
 let existingMovieTitle = 'League of Extraordinary Gentlemen';
 
 // Unknown movie ID
@@ -458,7 +457,7 @@ describe('Movies API - POST create movie validation', () => {
         if (res.status === 409) {
             expect(res.body.message).toContain('Movie with this title, director, and release date already exists');
         } else if (res.status === 201) {
-            // If it was created (maybe the movie didn't exist), clean it up
+            // clean it up
             if (res.body.id) {
                 await request(app)
                     .delete('/movies/' + res.body.id)

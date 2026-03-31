@@ -33,8 +33,10 @@ const configureApp = () => {
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
-      secure: isProduction, // HTTPS in production
+      // 24 hours
+      maxAge: 24 * 60 * 60 * 1000, 
+      // HTTPS in production
+      secure: isProduction, 
       httpOnly: true,
       sameSite: isProduction ? 'none' : 'lax',
     },
@@ -45,7 +47,8 @@ const configureApp = () => {
     sessionConfig.store = new MongoDBStore({
       uri: process.env.MONGO_URL,
       collection: 'sessions',
-      expires: 24 * 60 * 60, // 24 hours (in seconds)
+      // 24 hours (in seconds)
+      expires: 24 * 60 * 60, 
     });
   }
    
@@ -78,7 +81,6 @@ const configureApp = () => {
 
   // Middleware
   app.use(morgan('dev'));
-  // app.use(cors());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
@@ -172,7 +174,7 @@ const initApp = async () => {
   }
 };
 
-// Function to close database connection (useful for tests)
+// Function to close database connection (for tests)
 const closeDb = async () => {
   try {
     const db = mongodb.getDb();
@@ -185,7 +187,7 @@ const closeDb = async () => {
   }
 };
 
-// Start server only if this file is run directly (not imported for testing)
+// Start server only if this file is run directly 
 if (require.main === module) {
   initApp()
     .then(() => {
@@ -209,7 +211,6 @@ if (require.main === module) {
 // Export for testing
 module.exports = { 
   app, 
-  initApp,
-  
+  initApp,  
   closeDb
 };

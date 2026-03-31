@@ -167,12 +167,18 @@ describe('Users API - POST create user validation', () => {
     // Test 2: Multiple validation failures
     test('POST /users - returns 400 for multiple validation failures', async () => {
         const payload = {
-            googleId: '1234567890', // Less than 21 characters
-            displayName: 'J', // Less than 2 characters
-            firstName: 'J', // Less than 2 characters
-            lastName: 'E', // Less than 2 characters
-            email: 'jeyre.gmail.com', // Invalid email format
-            createdDate: 'March 9, 2026' // Wrong date format
+            // Less than 21 characters
+            googleId: '1234567890', 
+            // Less than 2 characters
+            displayName: 'J', 
+            // Less than 2 characters
+            firstName: 'J', 
+            // Less than 2 characters
+            lastName: 'E', 
+            // Invalid email format
+            email: 'jeyre.gmail.com', 
+            // Wrong date format
+            createdDate: 'March 9, 2026' 
         };
 
         const res = await request(app)
@@ -191,12 +197,14 @@ describe('Users API - POST create user validation', () => {
     test('POST /users - returns 400 for fields too long and invalid date', async () => {
         const longName = 'Adolph Blaine Charles David Earl Frederick Gerald Hubert Irvin John Kenneth Lloyd Martin Nero Oliver Paul Quincy Randolph Sherman Thomas Uncas Victor William Xerxes Yancy';
         const payload = {
-            googleId: '12345678901234567890345', // More than 21 characters
+            // More than 21 characters
+            googleId: '12345678901234567890345', 
             displayName: longName,
             firstName: longName,
             lastName: 'Smith-Jones-Brown-Williams-Taylor-Davies-Evans-Thomas',
             email: `test${Date.now()}@example.com`,
-            createdDate: '2006/03/09' // Wrong format
+            // Wrong format
+            createdDate: '2006/03/09' 
         };
 
         const res = await request(app)
@@ -216,7 +224,8 @@ describe('Users API - POST create user validation', () => {
             displayName: 'Test User',
             firstName: 'Test',
             lastName: 'User',
-            email: 'j.bond@gmail.com', // James Bond's email
+            // James Bond's email
+            email: 'j.bond@gmail.com', 
             createdDate: '03/09/2026'
         };
 
@@ -276,12 +285,18 @@ test('PUT /users/:id - updates user with partial fields', async () => {
     // Test 2: Update with multiple validation failures
     test('PUT /users/:id - returns 400 for validation failures', async () => {
         const payload = {
-            googleId: '1234567890', // Less than 21 characters
-            displayName: 'J', // Less than 2 characters
-            firstName: 'J', // Less than 2 characters
-            lastName: 'E', // Less than 2 characters
-            email: 'jeyre.gmail.com', // Invalid email
-            createdDate: 'March 9, 2026' // Wrong format
+            // Less than 21 characters
+            googleId: '1234567890', 
+            // Less than 2 characters
+            displayName: 'J', 
+            // Less than 2 characters
+            firstName: 'J', 
+            // Less than 2 characters
+            lastName: 'E', 
+            // Invalid email
+            email: 'jeyre.gmail.com', 
+            // Wrong format
+            createdDate: 'March 9, 2026' 
         };
 
         const res = await request(app)
@@ -298,12 +313,14 @@ test('PUT /users/:id - updates user with partial fields', async () => {
     test('PUT /users/:id - returns 400 for fields too long and invalid date', async () => {
         const longName = 'Adolph Blaine Charles David Earl Frederick Gerald Hubert Irvin John Kenneth Lloyd Martin Nero Oliver Paul Quincy Randolph Sherman Thomas Uncas Victor William Xerxes Yancy';
         const payload = {
-            googleId: '12345678901234567890345', // More than 21 characters
+            // More than 21 characters
+            googleId: '12345678901234567890345', 
             displayName: longName,
             firstName: longName,
             lastName: 'Smith-Jones-Brown-Williams-Taylor-Davies-Evans-Thomas',
             email: 'test@example.com',
-            createdDate: '2006/03/09' // Wrong format
+            // Wrong format
+            createdDate: '2006/03/09' 
         };
 
         const res = await request(app)
@@ -319,7 +336,8 @@ test('PUT /users/:id - updates user with partial fields', async () => {
     // Test 4: Update with email already in use
     test('PUT /users/:id - returns 409 for email already in use', async () => {
         const payload = {
-            email: 'j.bond@gmail.com' // James Bond's email
+            // James Bond's email
+            email: 'j.bond@gmail.com' 
         };
 
         const res = await request(app)
@@ -329,7 +347,6 @@ test('PUT /users/:id - updates user with partial fields', async () => {
 
         // Check actual API behavior
         if (res.status === 200) {
-            // API allows updating to same email (maybe because it's checking for different user)
             expect(res.body.message).toBe('User updated successfully');
         } else if (res.status === 409) {
             expect(res.body.message).toContain('Email is already in use');
@@ -382,7 +399,7 @@ test('PUT /users/:id - updates user with partial fields', async () => {
 // Test suite for Users API - DELETE operations
 describe('Users API - DELETE operations', () => {
     test('DELETE /users/:id - deletes user with valid ID', async () => {
-        // First create a user to delete
+        // Created a user to delete
         const createRes = await request(app)
             .post('/users')
             .set('Authorization', `Bearer ${authToken}`)
@@ -430,7 +447,7 @@ describe('Users API - DELETE operations', () => {
 
 // Test suite for Users API - Additional validation tests
 describe('Users API - Additional validation tests', () => {
-    // Test firstName validation with special characters
+    // Testing firstName validation with special characters
     test('POST /users - accepts valid firstName with special characters', async () => {
         const payload = makeCustomUserPayload({
             firstName: "Mary-Jane O'Connor"
@@ -451,7 +468,7 @@ describe('Users API - Additional validation tests', () => {
         }
     });
 
-    // Test lastName validation with special characters
+    // Testing lastName validation with special characters
     test('POST /users - accepts valid lastName with special characters', async () => {
         const payload = makeCustomUserPayload({
             lastName: "Smith-Jones"
@@ -472,7 +489,7 @@ describe('Users API - Additional validation tests', () => {
         }
     });
 
-    // Test firstName with invalid characters
+    // Testing firstName with invalid characters
     test('POST /users - rejects firstName with invalid characters', async () => {
         const payload = makeCustomUserPayload({
             firstName: "Jane123!@#"
@@ -487,7 +504,7 @@ describe('Users API - Additional validation tests', () => {
         expect(res.body.error).toBe('Validation failed');
     });
 
-    // Test lastName with invalid characters
+    // Testing lastName with invalid characters
     test('POST /users - rejects lastName with invalid characters', async () => {
         const payload = makeCustomUserPayload({
             lastName: "Eyre123!@#"
@@ -502,7 +519,7 @@ describe('Users API - Additional validation tests', () => {
         expect(res.body.error).toBe('Validation failed');
     });
 
-    // Test email format validation
+    // Testing email format validation
     test('POST /users - rejects invalid email formats', async () => {
         const invalidEmails = [
             'invalid-email',
@@ -527,7 +544,7 @@ describe('Users API - Additional validation tests', () => {
         }
     });
 
-    // Test createdDate format validation
+    // Testing createdDate format validation
     test('POST /users - rejects invalid date formats', async () => {
         const invalidDates = [
             '2024-03-09',

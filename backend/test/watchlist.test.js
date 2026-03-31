@@ -121,7 +121,7 @@ describe('Watchlist API - GET operations', () => {
 
 // Test suite for Watchlist API - POST create watchlist validation
 describe('Watchlist API - POST create watchlist validation', () => {
-    // Test 1: Try to create duplicate watchlist item (Hook is already in watchlist)
+    // Test 1:Create duplicate watchlist item (Hook is already in watchlist)
     test('POST /watchlist - returns 409 for duplicate watchlist item', async () => {
     const payload = {
         // James Bond
@@ -230,7 +230,7 @@ describe('Watchlist API - POST create watchlist validation', () => {
                 .set('Authorization', `Bearer ${authToken}`)
                 .send(payload);
 
-            // Track if it was created (shouldn't be, but just in case)
+            // Track if it was created (it shouldn't be)
             if (res.status === 201 && res.body.id) {
                 createdTestIds.push(res.body.id);
             }
@@ -428,7 +428,7 @@ describe('Watchlist API - DELETE operations', () => {
             .delete('/watchlist/' + existingWatchlistId)
             .set('Authorization', `Bearer ${authToken}`);
 
-        // Accept 200, 404, or 500 (due to potential bug)
+        // Accept 200, 404, or 500 
         expect([200, 404, 500]).toContain(res.status);
         if (res.status === 200) {
             expect(res.body.message).toBe('Watchlist item removed successfully');

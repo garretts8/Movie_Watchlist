@@ -12,7 +12,6 @@ const swaggerOptions = {
       // Add credentials to include cookies
       request.credentials = 'include';
       
-      // Log for debugging (optional, remove in production)
       console.log('Swagger request to:', request.url);
       
       return request;

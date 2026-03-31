@@ -29,10 +29,11 @@ passport.use(
      clientID: keys.google.GOOGLE_CLIENT_ID,
      clientSecret: keys.google.GOOGLE_CLIENT_SECRET,
      callbackURL: keys.google.CALLBACK_URL,
-     proxy: true, // Required for Render deployment
+     // Required for Render deployment
+     proxy: true, 
    },
    async (accessToken, refreshToken, profile, done) => {
-    
+
      try {
        console.log('Google profile received:', profile.id);
  

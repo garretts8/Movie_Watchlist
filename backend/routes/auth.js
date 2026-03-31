@@ -40,8 +40,9 @@ router.get(
 
     // Set cookies for frontend to read
     const cookieOptions = {
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
-      httpOnly: false, // Allow JavaScript to read these
+      // 24 hours
+      maxAge: 24 * 60 * 60 * 1000, 
+      httpOnly: false, 
       secure: keys.isProduction,
       sameSite: keys.isProduction ? 'none' : 'lax',
     };
@@ -54,7 +55,7 @@ router.get(
     // Set secure token cookie (httpOnly for security)
     res.cookie('token', token, {
       maxAge: 24 * 60 * 60 * 1000,
-      httpOnly: true, // Cannot be accessed by JavaScript
+      httpOnly: true, 
       secure: keys.isProduction,
       sameSite: keys.isProduction ? 'none' : 'lax',
     });

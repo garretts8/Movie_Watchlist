@@ -17,8 +17,8 @@ const getUserWatchlist = async (req, res) => {
                 $match: {
                   $expr: {
                     $or: [
-                      { $eq: ['$_id', { $toObjectId: '$$movieId' }] },  // Try as ObjectId
-                      { $eq: [{ $toString: '$_id' }, '$$movieId'] }     // Try as string
+                      { $eq: ['$_id', { $toObjectId: '$$movieId' }] },  
+                      { $eq: [{ $toString: '$_id' }, '$$movieId'] }     
                     ]
                   }
                 }
@@ -61,16 +61,14 @@ const getWatchlistItemById = async (req, res) => {
       return res.status(404).json({ message: 'Watchlist item not found' });
     }
     
-    // Get movie details - try both string and ObjectId
+    // Get movie details 
     let movie = null;
     
-    // Try as string first (watchlist stores movieId as string)
     movie = await mongodb
       .getDb()
       .collection('movies')
       .findOne({ _id: watchlistItem.movieId });
     
-    // If not found, try as ObjectId (movies might store _id as ObjectId)
     if (!movie) {
       try {
         const movieObjectId = new ObjectId(watchlistItem.movieId);
@@ -105,10 +103,8 @@ const addToWatchlist = async (req, res) => {
     console.log('Looking for movie with ID:', movieId);
     console.log('ID type:', typeof movieId);
     
-    // Check if movie exists - try both string and ObjectId
     let movie = null;
     
-    // First try as string
     movie = await mongodb
       .getDb()
       .collection('movies')
@@ -116,7 +112,6 @@ const addToWatchlist = async (req, res) => {
     
     console.log('Movie found as string?', movie ? 'Yes' : 'No');
     
-    // If not found, try as ObjectId
     if (!movie) {
       try {
         const movieObjectId = new ObjectId(movieId);
@@ -143,7 +138,6 @@ const addToWatchlist = async (req, res) => {
     
     console.log('Movie found:', movie.title);
     
-    // Check if already in watchlist
     const existing = await mongodb
       .getDb()
       .collection('watchlist')
@@ -155,19 +149,21 @@ const addToWatchlist = async (req, res) => {
       });
     }
     
-    // Create watchlist item matching your data structure
     const watchlistItem = {
-      userId: userId,                    // string
-      movieId: movieId,                   // string (keep as string to match existing data)
+      userId: userId,                    
+      movieId: movieId,                  
       addedDate: req.body.addedDate || new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
       status: req.body.status || 'plan-to-watch',
       userRating: req.body.userRating !== undefined && req.body.userRating !== null && req.body.userRating !== "null"
-        ? req.body.userRating.toString()  // store as string "5" not number 5
-        : "null",                          // store "null" as string
+      // store as string "5" not number 5
+        ? req.body.userRating.toString()  
+      // store "null" as string
+        : "null",                          
       reviewText: req.body.reviewText || '',
       startedWatching: req.body.startedWatching || null,
       completedWatching: req.body.completedDate || req.body.completedWatching || null,
-      rewatchCount: req.body.rewatchCount || 0,  // number
+      // number
+      rewatchCount: req.body.rewatchCount || 0,  
     };
 
     // Validation

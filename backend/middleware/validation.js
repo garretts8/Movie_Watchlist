@@ -376,9 +376,10 @@ const watchlistValidationRules = {
       .optional({ nullable: true })  // Allow null values
       .custom((value) => {
         if (value === null || value === undefined || value === "null") {
-          return true; // null is allowed
+          // null is allowed
+          return true; 
         }
-        // Check if it matches your date format "Month DD, YYYY"
+        // Match the date format "Month DD, YYYY"
         const dateRegex = /^[A-Za-z]+\s+\d{1,2},\s+\d{4}$/;
         if (!dateRegex.test(value)) {
           throw new Error('Started watching must be a valid date (e.g., "March 15, 2024")');
@@ -387,10 +388,10 @@ const watchlistValidationRules = {
       }),
 
     body('completedDate')
-      .optional({ nullable: true })  // Allow null values
+      .optional({ nullable: true })  
       .custom((value) => {
         if (value === null || value === undefined || value === "null") {
-          return true; // null is allowed
+          return true; 
         }
         // Check if it matches your date format "Month DD, YYYY"
         const dateRegex = /^[A-Za-z]+\s+\d{1,2},\s+\d{4}$/;
