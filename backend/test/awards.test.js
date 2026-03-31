@@ -24,8 +24,8 @@ let existingMovieIds = [
 ];
 
 //Use Jupiter Ascending's award
-let existingAwardId = '69a61418975615bcb31f4714'; // Jupiter Ascending award
-let existingMovieWithAwards = '69a60fe0975615bcb31f46f3'; // Jupiter Ascending
+let existingAwardId = '69a61418975615bcb31f4714'; 
+let existingMovieWithAwards = '69a60fe0975615bcb31f46f3'; 
 
 // Unknown IDs
 let unknownMovieId = '69a610f4975615bcb31f4709';
