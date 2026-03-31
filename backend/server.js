@@ -65,8 +65,8 @@ const configureApp = () => {
   const corsOptions = {
     origin: isProduction
       ? [
-          'https://cse341-code-student-1.onrender.com',
-          'https://cse341-code-student-1.onrender.com',
+          'https://movie-watchlist-1w1x.onrender.com',
+          'http://localhost:3000'
         ]
       : ['http://localhost:3000', 'http://localhost:8080'],
     credentials: true,
@@ -78,7 +78,7 @@ const configureApp = () => {
 
   // Middleware
   app.use(morgan('dev'));
-  app.use(cors());
+  // app.use(cors());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 

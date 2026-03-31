@@ -107,6 +107,7 @@ body {
   color: var(--sunflower);
   margin-left: 10px;
   cursor: pointer;
+  transition: color 0.3s;
 }
 
 #logoutIcon:hover {

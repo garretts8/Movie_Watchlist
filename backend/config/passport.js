@@ -32,6 +32,7 @@ passport.use(
      proxy: true, // Required for Render deployment
    },
    async (accessToken, refreshToken, profile, done) => {
+    
      try {
        console.log('Google profile received:', profile.id);
  

@@ -9,6 +9,9 @@ const googleLoginBtn = document.getElementById('googleLoginBtn');
 const menuToggle = document.getElementById('menuToggle');
 const navMenu = document.getElementById('navMenu');
 
+// Track login state to avoid repeated checks
+let isUserLoggedIn = false;
+
 // Check login status from cookies
 function checkLoginStatus() {
   const isLoggedIn = document.cookie
@@ -19,9 +22,12 @@ function checkLoginStatus() {
     .find((row) => row.startsWith('userName='));
 
   if (isLoggedIn && isLoggedIn.split('=')[1] === 'true') {
-    updateUIForLoggedInUser(userName ? userName.split('=')[1] : 'User');
+    isUserLoggedIn = true;
+    updateUIForLoggedInUser(userName ? decodeURIComponent(userName.split('=')[1]) : 'User');
     return true;
   }
+  isUserLoggedIn = false;
+  updateUIForLoggedOutUser();
   return false;
 }
 
@@ -30,8 +36,26 @@ function updateUIForLoggedInUser(userName) {
   if (userIcon) {
     userIcon.classList.add('logged-in');
     userIcon.title = `Logged in as ${userName}`;
+    // Remove click handler that opens modal when logged in
+    userIcon.onclick = null;
   }
   addLogoutButton();
+}
+
+// Update UI for logged out user
+function updateUIForLoggedOutUser() {
+  if (userIcon) {
+    userIcon.classList.remove('logged-in');
+    userIcon.title = 'Login';
+    // Add click handler to open modal when logged out
+    userIcon.onclick = openModal;
+  }
+  
+  // Remove logout button if exists
+  const logoutIcon = document.getElementById('logoutIcon');
+  if (logoutIcon) {
+    logoutIcon.remove();
+  }
 }
 
 // Add logout button
@@ -54,7 +78,8 @@ function addLogoutButton() {
 
 // Open modal
 function openModal() {
-  if (checkLoginStatus()) {
+  // Don't call checkLoginStatus() here - use the tracked variable instead
+  if (isUserLoggedIn) {
     alert('You are already logged in!');
     return;
   }
@@ -69,7 +94,8 @@ function closeModal() {
 }
 
 // Event listeners
-if (userIcon) userIcon.addEventListener('click', openModal);
+// REMOVE the userIcon event listener from here since it's now set in updateUIForLoggedOutUser()
+// if (userIcon) userIcon.addEventListener('click', openModal);  // <-- COMMENT THIS OUT or REMOVE
 if (ctaButton) ctaButton.addEventListener('click', openModal);
 if (closeBtn) closeBtn.addEventListener('click', closeModal);
 
@@ -78,7 +104,7 @@ window.addEventListener('click', (event) => {
   if (event.target === modal) closeModal();
 });
 
-// Google OAuth - PRESERVED
+// Google OAuth
 if (googleLoginBtn) {
   googleLoginBtn.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -111,4 +137,6 @@ document.querySelectorAll('.nav-link').forEach((link) => {
 });
 
 // Initialize
-document.addEventListener('DOMContentLoaded', checkLoginStatus);
+document.addEventListener('DOMContentLoaded', () => {
+  checkLoginStatus();
+});

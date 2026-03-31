@@ -4,14 +4,18 @@ const keys = require('../config/keys');
 const { app, initApp, closeDb } = require('../server');
 
 let authToken;
-let createdTestIds = []; // Track created test items for cleanup
+// Track created test items for cleanup
+let createdTestIds = []; 
 
 // Existing user IDs
-let existingUserId = '69a610f4975615bcb31f4702'; // James Bond
+// James Bond
+let existingUserId = '69a610f4975615bcb31f4702'; 
 
 // Existing watchlist item ID (Jupiter Ascending)
-let existingWatchlistId = '69a61326975615bcb31f470f'; // Hook
-let existingMovieId = '69a61077975615bcb31f46fb'; // Hook
+// Hook
+let existingWatchlistId = '69a61326975615bcb31f470f'; 
+// Hook
+let existingMovieId = '69a61077975615bcb31f46fb'; 
 
 // Unknown IDs
 let unknownUserId = '69a610f4975615bcb31f4709';
@@ -120,8 +124,10 @@ describe('Watchlist API - POST create watchlist validation', () => {
     // Test 1: Try to create duplicate watchlist item (Hook is already in watchlist)
     test('POST /watchlist - returns 409 for duplicate watchlist item', async () => {
     const payload = {
-        userId: "69a610f4975615bcb31f4702", // James Bond
-        movieId: "69a61077975615bcb31f46fb", // Hook
+        // James Bond
+        userId: "69a610f4975615bcb31f4702", 
+        // Hook
+        movieId: "69a61077975615bcb31f46fb", 
         addedDate: "June 2, 2015",
         status: "plan-to-watch",
         userRating: null,
@@ -151,7 +157,6 @@ describe('Watchlist API - POST create watchlist validation', () => {
             reviewText: 'Test review',
             startedWatching: null,
             completedDate: null
-            // rewatchCount is missing
         };
 
         const res = await request(app)
